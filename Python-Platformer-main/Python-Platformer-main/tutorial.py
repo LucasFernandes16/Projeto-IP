@@ -276,7 +276,6 @@ def handle_move(player, objects):
         if obj and obj.name == "fire":
             player.make_hit()
 
-
 def main(window):
     clock = pygame.time.Clock()
     background, bg_image = get_background("Blue.png")
