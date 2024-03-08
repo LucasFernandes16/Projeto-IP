@@ -53,7 +53,8 @@ def main(window):
             if event.type == pygame.QUIT:
                 run = False
                 break
-        
+        player.loop(FPS)
+        handle_move(player)
         draw(window, background, bg_image, player) #chamando a def do fundo 
     pygame.quit()
     quit()
