@@ -6,7 +6,7 @@ from os import listdir
 from os.path import isfile, join
 pygame.init()
 
-pygame.display.set_caption("Raphael Adventure")
+pygame.display.set_caption("Dnamel Adventure")
 
 WIDTH, HEIGHT = 680, 480
 FPS = 60
@@ -55,6 +55,17 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     def draw(self, win):
         pygame.draw.rect(win, self.COLOR, self.rect)
 
+#função responsável por mover nosso personagem principal na tela 
+def handle_move(player):
+    keys = pygame.key.get_pressed() #informa todas as teclas que estão sendo pressionadas no comento 
+    player.x_vel = 0 
+    #criando a responsividade para apertar a tecla e mover o personagem
+    if keys[pygame.K_LEFT]: 
+        player.move_left(PLAYER_VEL) # passando o quanto o player vai se mover 
+    if keys[pygame.K_RIGHT]:
+        player.move_right(PLAYER_VEL)
+
+
 # Criando o fundo do jogo
 def get_background(name):
     image = pygame.image.load(join("assets", "Background", name)) # Acessando a pasta que contém a imagem que usaremos de fundo
@@ -94,6 +105,8 @@ def main(window):
             if event.type == pygame.QUIT:
                 run = False
                 break
+        player.loop(FPS)
+        handle_move(player)
         draw(window, background, bg_image, player) #chamando a def do fundo 
     pygame.quit()
     quit()

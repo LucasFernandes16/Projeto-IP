@@ -1,3 +1,4 @@
+import pygame
 # Criando o personagem
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
     COLOR = (255, 0, 0)
