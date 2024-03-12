@@ -8,6 +8,7 @@ pygame.init()
 
 pygame.display.set_caption("Dnamel Adventure")
 
+
 WIDTH, HEIGHT = 680, 480
 FPS = 60
 PLAYER_VEL = 5
@@ -17,6 +18,7 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 # Criando o personagem
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
     COLOR = (255, 0, 0)
+    GRAVITY = 1########
 
     # Aqui a altura e largura serão determinadas pela imagem q estamos usando para o nosso personagem
     def __init__(self, x, y, width, height):
@@ -27,7 +29,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.mask = None #Armazena a máscara de colisão correspondente à imagem do objeto, que é usada para detecção de colisão mais precisa
         
         self.animation_count = 0 # sem isso vc redefine a animação em quanto o palyer está se movendo e vai bugar a tela
-
+        self.fall_count = 0#######
     # Apenas a direção de movimento 
     def move(self, dx, dy):
         self.rect.x += dx
@@ -35,7 +37,6 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     
     def move_left(self, vel):
         self.x_vel = -vel # a velocidade é negativa, pq se vc quiser ir para trás estará removendo os quadros relativo a tela do jogo, recomendo verem essa parte do vídeo e uma representação dos eixos no pygame
-    
     # O resto é entendível aq
         if self.direction != "left":
             self.direction = "left"
@@ -49,7 +50,10 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     
     # Uma def com relação ao loop while e garente a movimentação e atualização do player na tela
     def loop(self, fps):
+        self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)########
         self.move(self.x_vel, self.y_vel)
+
+        self.fall_count += 1############
 
     # Desenha o player na tela
     def draw(self, win):
