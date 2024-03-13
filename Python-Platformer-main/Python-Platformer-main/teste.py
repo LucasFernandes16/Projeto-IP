@@ -27,7 +27,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.y_vel = 0
         # Pesquisem sobre dps:
         self.mask = None #Armazena a máscara de colisão correspondente à imagem do objeto, que é usada para detecção de colisão mais precisa
-        
+        self.direction = ""
         self.animation_count = 0 # sem isso vc redefine a animação em quanto o palyer está se movendo e vai bugar a tela
         self.fall_count = 0#######
     # Apenas a direção de movimento 
