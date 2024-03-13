@@ -25,7 +25,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.y_vel = 0
         # Pesquisem sobre dps:
         self.mask = None #Armazena a máscara de colisão correspondente à imagem do objeto, que é usada para detecção de colisão mais precisa
-        
+        self.direction = "left"
         self.animation_count = 0 # sem isso vc redefine a animação em quanto o palyer está se movendo e vai bugar a tela
 
     # Apenas a direção de movimento 
@@ -54,6 +54,15 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     # Desenha o player na tela
     def draw(self, win):
         pygame.draw.rect(win, self.COLOR, self.rect)
+
+def handle_move(player):
+    keys = pygame.key.get_pressed() #informa todas as teclas que estão sendo pressionadas no comento 
+    player.x_vel = 0 
+    #criando a responsividade para apertar a tecla e mover o personagem
+    if keys[pygame.K_LEFT]: 
+        player.move_left(PLAYER_VEL) # passando o quanto o player vai se mover 
+    if keys[pygame.K_RIGHT]:
+        player.move_right(PLAYER_VEL)
 
 # Criando o fundo do jogo
 def get_background(name):
@@ -94,6 +103,8 @@ def main(window):
             if event.type == pygame.QUIT:
                 run = False
                 break
+        player.loop(FPS)
+        handle_move(player)
         draw(window, background, bg_image, player) #chamando a def do fundo 
     pygame.quit()
     quit()
