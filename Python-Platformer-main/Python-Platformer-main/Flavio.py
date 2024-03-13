@@ -2,15 +2,16 @@ import pygame
 # Criando o personagem
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
     COLOR = (255, 0, 0)
-
+    GRAVITY = 1
     # Aqui a altura e largura serão determinadas pela imagem q estamos usando para o nosso personagem
     def __init__(self, x, y, width, height):
+        super().__init__()
         self.rect = pygame.Rect(x, y, width, height) # Adicionado todos esses valores em retângulo fica mais fácil de acessar e resolver os problemas das colisões
         self.x_vel = 0
         self.y_vel = 0
         # Pesquisem sobre dps:
         self.mask = None #Armazena a máscara de colisão correspondente à imagem do objeto, que é usada para detecção de colisão mais precisa
-        
+        self.fall_count = 0
         self.animation_count = 0 # sem isso vc redefine a animação em quanto o palyer está se movendo e vai bugar a tela
 
     # Apenas a direção de movimento 
@@ -34,8 +35,30 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     
     # Uma def com relação ao loop while e garente a movimentação e atualização do player na tela
     def loop(self, fps):
+        self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)
         self.move(self.x_vel, self.y_vel)
-
+        self.fall_count += 1
+    
     # Desenha o player na tela
     def draw(self, win):
         pygame.draw.rect(win, self.COLOR, self.rect)
+
+# Apenas definindo a classe de objetos para usar herença nos outros objetos q iremos criar no jogo
+class Object(pygame.sprite.Sprites):
+    def __init__(self, x, y, width, height, name=None):
+        super().__init__()
+        self.rect = pygame.Rect(x, y, width, height)
+        self.image = pygame.Surface((width, height), pygame.SRCALPHA)
+        self.width = width
+        self.height = height
+        self.name = name
+    def draw(self, win):
+        win.blit(self.image, (self.rect.x, self.rect.y))
+
+class Block(Object):
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size, size)
+        block = load_block(size)
+        self.block = block
+        self.image.blit(block, (0,0))
+        self.mask = pygame.mask.from_surface(self.image)
