@@ -1,8 +1,5 @@
-<<<<<<< Updated upstream
-=======
 import pygame
 
->>>>>>> Stashed changes
 def flip(sprites):
     # Função que inverte as imagens horizontalmente
     return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
@@ -20,11 +17,7 @@ def load_sprite_sheets(dir1, dir2, width, height, direction=False):
         sprites = []
         for i in range(sprite_sheet.get_width() // width):
             surface = pygame.Surface((width, height), pygame.SRCALPHA, 32)
-<<<<<<< Updated upstream
             rect = pygame.Rect(i * width, 0, width, height)
-=======
-            rect = pygame.Rect(i * width, 0, width, height) 
->>>>>>> Stashed changes
             surface.blit(sprite_sheet, (0, 0), rect)
             sprites.append(pygame.transform.scale2x(surface))
 

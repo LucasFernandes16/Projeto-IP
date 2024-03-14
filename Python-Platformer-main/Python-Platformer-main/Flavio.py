@@ -81,8 +81,5 @@ class Block(Object):
         super().__init__(x, y, size, size) # Repetimos size pq oq queremos é um quadrado
         block = get_block(size)
         self.image.blit(block, (0, 0))
-<<<<<<< Updated upstream
         self.mask = pygame.mask.from_surface(self.image)#criando a máscara de colisão para ser ocultado da superfíce
-=======
-        self.mask = pygame.mask.from_surface(self.image) #criando a máscara de colisão para ser ocultado da superfíce
->>>>>>> Stashed changes
+
