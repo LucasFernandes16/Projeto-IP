@@ -8,8 +8,7 @@ pygame.init()
 
 pygame.display.set_caption("Dnamel Adventure")
 
-
-WIDTH, HEIGHT = 680, 480
+WIDTH, HEIGHT = 900, 700
 FPS = 60
 PLAYER_VEL = 5
 
@@ -102,12 +101,14 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     def move(self, dx, dy):
         self.rect.x += dx
         self.rect.y += dy
+    
     def jump(self):
         self.y_vel = -self.GRAVITY * 7 #a gravidade vai negativa para que ele pule no ar, ou seja fique mais "leve" e vá para cima
         self.animation_count = 0
         self.jump_count += 1
         if self.jump_count == 1:
             self.fall_count = 0 #isso faz com que quando eu pule consiga me livrar da gravidade 
+    
     def move_left(self, vel):
         self.x_vel = -vel # a velocidade é negativa, pq se vc quiser ir para trás estará removendo os quadros relativo a tela do jogo, recomendo verem essa parte do vídeo e uma representação dos eixos no pygame
     # O resto é entendível aq
@@ -172,17 +173,6 @@ class Block(Object):
         self.mask = pygame.mask.from_surface(self.image)#criando a máscara de colisão para ser ocultado da superfíce
 
 
-#função responsável por mover nosso personagem principal na tela 
-def handle_move(player):
-    keys = pygame.key.get_pressed() #informa todas as teclas que estão sendo pressionadas no comento 
-    player.x_vel = 0 
-    #criando a responsividade para apertar a tecla e mover o personagem
-    if keys[pygame.K_LEFT]: 
-        player.move_left(PLAYER_VEL) # passando o quanto o player vai se mover 
-    if keys[pygame.K_RIGHT]:
-        player.move_right(PLAYER_VEL)
-
-
 # Criando o fundo do jogo
 def get_background(name):
     image = pygame.image.load(join("assets", "Background", name)) # Acessando a pasta que contém a imagem que usaremos de fundo
@@ -211,6 +201,18 @@ def draw(window, background, bg_image, player, floor):
 
     pygame.display.update() # Atualizando a tela a cada frame
 
+
+#função responsável por mover nosso personagem principal na tela 
+def handle_move(player, objects):
+    keys = pygame.key.get_pressed() #informa todas as teclas que estão sendo pressionadas no comento 
+    player.x_vel = 0 
+    #criando a responsividade para apertar a tecla e mover o personagem
+    if keys[pygame.K_LEFT]: 
+        player.move_left(PLAYER_VEL) # passando o quanto o player vai se mover 
+    if keys[pygame.K_RIGHT]:
+        player.move_right(PLAYER_VEL)
+
+
 def main(window):
     clock = pygame.time.Clock()
     background, bg_image = get_background("Purple.png") # bg_image é a imagem de fundo 
@@ -233,7 +235,7 @@ def main(window):
                 if event.key == pygame.K_SPACE and player.jump_count < 2: #se a tecla for espaço e o contador dos nossos pulos for menor que dois, vai poder pular duas vezes
                     player.jump()
         player.loop(FPS)
-        handle_move(player)
+        handle_move(player, floor)
 
         draw(window, background, bg_image, player, floor) #chamando a def do fundo 
 
