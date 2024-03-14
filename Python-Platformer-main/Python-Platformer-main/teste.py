@@ -108,7 +108,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     
     # Uma def com relação ao loop while e garente a movimentação e atualização do player na tela
     def loop(self, fps):
-        self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)#sempre empurrando para baixo constantemente 
+        #self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)#sempre empurrando para baixo constantemente 
         self.move(self.x_vel, self.y_vel)
 
         self.fall_count += 1
