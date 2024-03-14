@@ -15,6 +15,10 @@ PLAYER_VEL = 5
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 def flip(sprites):
     # Função que inverte as imagens horizontalmente
     return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
@@ -32,7 +36,11 @@ def load_sprite_sheets(dir1, dir2, width, height, direction=False):
         sprites = []
         for i in range(sprite_sheet.get_width() // width):
             surface = pygame.Surface((width, height), pygame.SRCALPHA, 32)
+<<<<<<< Updated upstream
             rect = pygame.Rect(i * width, 0, width, height)
+=======
+            rect = pygame.Rect(i * width, 0, width, height) 
+>>>>>>> Stashed changes
             surface.blit(sprite_sheet, (0, 0), rect)
             sprites.append(pygame.transform.scale2x(surface))
 
@@ -45,6 +53,7 @@ def load_sprite_sheets(dir1, dir2, width, height, direction=False):
 
     return all_sprites  # Retorna o dicionário contendo todos os sprites
 
+<<<<<<< Updated upstream
 def get_block(size):
     path = join("assets", "Terrain", "Terrain.png") # Acessa a pasta q contém a imagem do bloco
     image = pygame.image.load(path).convert_alpha()
@@ -58,6 +67,25 @@ def get_block(size):
 
     surface.blit(image, (0, 0), rect)
     return pygame.transform.scale2x(surface)
+=======
+
+def update_sprite(self):
+    # Função para atualizar o sprite com base no estado do personagem
+    sprite_sheet = "idle"
+    if self.x_vel != 0:
+        sprite_sheet = "run"  # Se o personagem estiver se movendo, muda para os sprites "run" 
+
+    sprite_sheet_name = sprite_sheet + "" + self.direction  # Concatenação para obter o nome correto da sprite sheet
+    sprites = self.SPRITES[sprite_sheet_name]  # Obtém os sprites correspondentes à sprite sheet atual
+    sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)  # Calcula o índice do sprite a ser exibido com base no atraso entre as animações
+    self.sprite = sprites[sprite_index]  # Define o sprite atual
+    self.animation_count += 1  # Incrementa o contador de animação
+    self.update()  # Chama a função de atualização
+
+def update():
+    self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))  # Atualiza a posição do retângulo do sprite
+    self.mask = pygame.mask.from_surface(self.sprite)  # Atualiza a colisão do sprite
+>>>>>>> Stashed changes
 
 # Criando o personagem
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
@@ -175,11 +203,18 @@ def get_background(name):
     return tiles, image 
 
 # Desenhando o fundo
+<<<<<<< Updated upstream
 def draw(window, background, bg_image, player, floor):
+=======
+def draw(window, background, bg_image, player, objects):
+>>>>>>> Stashed changes
     # Percorrendo cada bloco para poder desenhar sobre ele
     for tile in background:
         # window.blit é usado para atualizar o conteúdo da janela do jogo a cada quadro
         window.blit(bg_image, tile)
+    
+    for obj in objects:
+        obj.draw(window)
 
     for obj in floor:
         obj.draw(window)
@@ -192,11 +227,18 @@ def main(window):
     clock = pygame.time.Clock()
     background, bg_image = get_background("Purple.png") # bg_image é a imagem de fundo 
     block_size = 96
+<<<<<<< Updated upstream
 
     player = Player(100, 100, 50, 50) # Os parâmetros para cosntruir o player na tela 
     #faltaa comentar
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
             for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
+=======
+    
+    player = Player(100, 100, 50, 50) # Os parâmetros para cosntruir o player na tela 
+    
+    floor = [Block(i * block_size, HEIGHT - block_size, block_size)]
+>>>>>>> Stashed changes
 
     run = True
     while run:
@@ -211,7 +253,11 @@ def main(window):
                     player.jump()
         player.loop(FPS)
         handle_move(player)
+<<<<<<< Updated upstream
         draw(window, background, bg_image, player, floor) #chamando a def do fundo 
+=======
+        draw(window, background, bg_image, player, blocks) #chamando a def do fundo 
+>>>>>>> Stashed changes
     pygame.quit()
     quit()
 

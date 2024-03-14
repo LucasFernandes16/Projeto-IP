@@ -18,6 +18,8 @@ def get_block(size):
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
     COLOR = (255, 0, 0)
     GRAVITY = 1
+    ANIMATION_DELAY = 3
+    
     # Aqui a altura e largura serão determinadas pela imagem q estamos usando para o nosso personagem
     def __init__(self, x, y, width, height):
         super().__init__()
@@ -79,4 +81,8 @@ class Block(Object):
         super().__init__(x, y, size, size) # Repetimos size pq oq queremos é um quadrado
         block = get_block(size)
         self.image.blit(block, (0, 0))
+<<<<<<< Updated upstream
         self.mask = pygame.mask.from_surface(self.image)#criando a máscara de colisão para ser ocultado da superfíce
+=======
+        self.mask = pygame.mask.from_surface(self.image) #criando a máscara de colisão para ser ocultado da superfíce
+>>>>>>> Stashed changes
