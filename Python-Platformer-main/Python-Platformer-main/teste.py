@@ -197,24 +197,24 @@ def draw(window, background, bg_image, player, floor):
     pygame.display.update() # Atualizando a tela a cada frame
 
 # Função para determinar a colisão vertical
-#def handle_vertical_collision(player, objects, dy):
-#    collided_objects = []
-#    for obj in objects:
-#        if pygame.sprite.collide_mask(player, obj): # Pela herança da classe sprite.Sprite usamos a "mask" dela para facilitar a nossa colisão
-#        # Passamos o nosso player e os objetos q iremos colidir
-#
-#        # Aqui temos os dois tipos de colisão:
-#            # O player caindo encima do objeto
-#            if dy > 0:
-#                player.rect.bottom = obj.rect.top
-#                player.landed()
-#            elif dy < 0:
-#                player.rect.top = obj.rect.bottom
-#                player.hit_head()
-#            # dy é deslocamento em y, velocidade em y
-#
-#        collided_objects.append(obj) 
-#    return collided_objects # Para sabermos quais objetos estamos colidindo
+def handle_vertical_collision(player, objects, dy):
+   collided_objects = []
+   for obj in objects:
+       if pygame.sprite.collide_mask(player, obj): # Pela herança da classe sprite.Sprite usamos a "mask" dela para facilitar a nossa colisão
+       # Passamos o nosso player e os objetos q iremos colidir
+
+       # Aqui temos os dois tipos de colisão:
+           # O player caindo encima do objeto
+           if dy > 0:
+               player.rect.bottom = obj.rect.top
+               player.landed()
+           elif dy < 0:
+               player.rect.top = obj.rect.bottom
+               player.hit_head()
+           # dy é deslocamento em y, velocidade em y
+
+       collided_objects.append(obj) 
+   return collided_objects # Para sabermos quais objetos estamos colidindo
 
 #função responsável por mover nosso personagem principal na tela 
 def handle_move(player, objects):
