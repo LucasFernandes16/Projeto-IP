@@ -109,7 +109,16 @@ class Block(Object):
         self.image.blit(block, (0, 0))
         self.mask = pygame.mask.from_surface(self.image)#criando a máscara de colisão para ser ocultado da superfíce
 
+# Zera os contadores ao colidir com o objeto
+def landed(self):
+    self.fall_count = 0 
+    self.y_vel = 0
+    self.jump_count = 0
 
+
+def hit_head(self):
+    self.count = 0
+    self.y_vel *= -1 # A velocidade na vertical fica negativa para ele ricochetear em direção ao chão
 
 # Função para determinar a colisão vertical
 def handle_vertical_collision(player, objects, dy):
