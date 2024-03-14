@@ -20,8 +20,11 @@ def flip(sprites):
     return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
 
 def load_sprite_sheets(dir1, dir2, width, height, direction=False):
+    # dir1 é a pasta onde as sprites estão guardadas 
+    # dir2 é a sprite q vc quer usar
+    
     # Função para carregar spritesheets e criar sprites a partir delas
-    path = join("assents", dir1, dir2)
+    path = join("assets", dir1, dir2)
     images = [f for f in listdir(path) if isfile(join(path, f))]
 
     all_sprites = {}  # Dicionário para armazenar todos os sprites
@@ -53,7 +56,7 @@ def get_block(size):
     surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)
 
     # Para carregar a imagem desejada iniciamos a contar de 96 pixels de distância do eixo x e teremos o bloco verde
-    rect = pygame.Rect(96, 64, size, size) 
+    rect = pygame.Rect(96, 0, size, size) 
     # Isso significa q cada bloco quadrado vísivel possui 8 pixels, 96/8 = 12 quadrados de distância em x
 
     surface.blit(image, (0, 0), rect)
@@ -75,10 +78,13 @@ def update_sprite(self):
 def update():
     self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))  # Atualiza a posição do retângulo do sprite
     self.mask = pygame.mask.from_surface(self.sprite)  # Atualiza a colisão do sprite
+
 # Criando o personagem
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
     COLOR = (255, 0, 0)
     GRAVITY = 1########
+    SPRITES = load_sprite_sheets("MainCharacters", "NinjaFrog", 32, 32, True)
+    ANIMATION_DELAY = 3
 
     # Aqui a altura e largura serão determinadas pela imagem q estamos usando para o nosso personagem
     def __init__(self, x, y, width, height):
@@ -87,7 +93,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.y_vel = 0
         # Pesquisem sobre dps:
         self.mask = None #Armazena a máscara de colisão correspondente à imagem do objeto, que é usada para detecção de colisão mais precisa
-        self.direction = ""
+        self.direction = "right"
         self.animation_count = 0 # sem isso vc redefine a animação em quanto o palyer está se movendo e vai bugar a tela
         self.fall_count = 0#######
         self.jump_count = 0
@@ -141,7 +147,8 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
 
     # Desenha o player na tela
     def draw(self, win):
-        pygame.draw.rect(win, self.COLOR, self.rect)
+        self.sprite = self.SPRITES["idle_" + self.direction][0]
+        win.blit(self.sprite, (self.rect.x, self.rect.y))
 
 # Apenas definindo a classe de objetos para usar herença nos outros objetos q iremos criar no jogo
 class Object(pygame.sprite.Sprite):
