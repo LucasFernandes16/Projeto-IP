@@ -38,7 +38,7 @@ def update_sprite(self):
     if self.x_vel != 0:
         sprite_sheet = "run"  # Se o personagem estiver se movendo, muda para os sprites "run" 
 
-    sprite_sheet_name = sprite_sheet + "" + self.direction  # Concatenação para obter o nome correto da sprite sheet
+    sprite_sheet_name = sprite_sheet + "_" + self.direction  # Concatenação para obter o nome correto da sprite sheet
     sprites = self.SPRITES[sprite_sheet_name]  # Obtém os sprites correspondentes à sprite sheet atual
     sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)  # Calcula o índice do sprite a ser exibido com base no atraso entre as animações
     self.sprite = sprites[sprite_index]  # Define o sprite atual
