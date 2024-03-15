@@ -35,3 +35,4 @@ class Fire(Object):
     #fire = Fire(100, HEIGHT - block_size - 64, 16, 32) #cuidado para n passar um tamanho muito grande
     #fire.on() #deixando o fogo ligado 
 #e depois adicionar em objects
+#
