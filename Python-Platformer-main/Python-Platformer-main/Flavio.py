@@ -56,6 +56,8 @@ def load_sprite_sheets(dir1, dir2, width, height, direction=False):
 
 # Criando o personagem
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
+    """ popo x bambam
+    """
     COLOR = (255, 0, 0)
     GRAVITY = 1########
     SPRITES = load_sprite_sheets("MainCharacters", "NinjaFrog", 32, 32, True)
