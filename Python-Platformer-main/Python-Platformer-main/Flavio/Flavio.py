@@ -54,6 +54,25 @@ def load_sprite_sheets(dir1, dir2, width, height, direction=False):
     return all_sprites  # Retorna o dicionário contendo todos os sprites
 
 
+class Collectabli(Object):
+    ANIMATION_DELAY = 3
+    SPRITES = load_sprite_sheets("MainCharacters", "NinjaFrog", 32, 32, True)
+    def __init__(self, x, y, size, name):
+        ad 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Criando o personagem
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
     """ popo x bambam
