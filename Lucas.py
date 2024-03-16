@@ -2,8 +2,8 @@
 class Fire(Object):
     ANIMATION_DELAY = 3
 
-    def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height, "fire") # passando o nome 'fire' para o objeto
+    def _init_(self, x, y, width, height):
+        super()._init_(x, y, width, height, "fire") # passando o nome 'fire' para o objeto
         self.fire = load_sprite_sheets("Traps", "Fire", width, height) #carregando as sprites das armadilhas de disparo automátioo 
         self.image = self.fire["off"][0] #inicializando a imagem do fogo apagado'off'
         self.mask = pygame.mask.from_surface(self.image)
@@ -34,4 +34,4 @@ class Fire(Object):
 #main: passar para a main o fire com os tamanhos da sprite:
     #fire = Fire(100, HEIGHT - block_size - 64, 16, 32) #cuidado para n passar um tamanho muito grande
     #fire.on() #deixando o fogo ligado 
-#e depois adicionar em objects
+#e depois adicionar em objects

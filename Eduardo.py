@@ -28,6 +28,7 @@ class Fire(Object):
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
             self.animation_count = 0 
 
-
+### mudar a classe lopp com isso aqui  
+### 
 ## mudar a classe window acrescentar isso aqui 
             #fire = dfkaksdfaskdffksdfkask 
