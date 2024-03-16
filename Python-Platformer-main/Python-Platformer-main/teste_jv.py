@@ -5,7 +5,6 @@ import pygame
 from os import listdir
 from os.path import isfile, join
 pygame.init()
-
 pygame.display.set_caption("Platformer")
 
 WIDTH, HEIGHT = 1000, 800
@@ -68,7 +67,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     COLOR = (255, 0, 0)
     GRAVITY = 1
     SPRITES = load_sprite_sheets("MainCharacters", "NinjaFrog", 32, 32, True)
-    ANIMATION_DELAY = 3
+    ANIMATION_DELAY = 5
     
     # Aqui a altura e largura serão determinadas pela imagem q estamos usando para o nosso personagem
     def __init__(self, x, y, width, height):
@@ -188,40 +187,67 @@ class Block(Object):
         self.image.blit(block, (0, 0))
         self.mask = pygame.mask.from_surface(self.image) #criando a máscara de colisão para ser ocultado da superfíce
 
+class Flag(Object):
+    ANIMATION_DELAY = 26
+
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height, "flag")
+        self.flag = load_sprite_sheets("Items", "Checkpoints", width, height)
+        self.image = self.flag["Checkpoint (No Flag)"][0]
+        self.mask = pygame.mask.from_surface(self.image)
+        self.animation_count = 0
+        self.animation_name = "Checkpoint (No Flag)"
+
+    def hitflag(self):
+        self.animation_name = "Checkpoint (Flag Out) (64x64)"
+
+    def noflag(self):
+        self.animation_name = "Checkpoint (No Flag)"
+
+    def loop(self):
+        sprites = self.flag[self.animation_name]
+        sprite_index = (self.animation_count //
+                        self.ANIMATION_DELAY) % len(sprites)
+        self.image = sprites[sprite_index]
+        self.animation_count += 1
+
+        self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
+        self.mask = pygame.mask.from_surface(self.image)
+
+        if self.animation_count // self.ANIMATION_DELAY > len(sprites):
+            self.animation_count = 0
+
+
 
 class Fire(Object):
     ANIMATION_DELAY = 3
 
     def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height, "fire")# passando o nome 'fire' para o objeto
-        self.fire = load_sprite_sheets("Traps", "Fire", width, height)#carregando as sprites das armadilhas de disparo automátioo 
-        self.image = self.fire["off"][0]#inicializando a imagem do fogo apagado'off'
+        super().__init__(x, y, width, height, "fire")
+        self.fire = load_sprite_sheets("Traps", "Fire", width, height)
+        self.image = self.fire["off"][0]
         self.mask = pygame.mask.from_surface(self.image)
         self.animation_count = 0
         self.animation_name = "off"
-    #definindo a classe autodidata que puxa a animaçao do fogo aceso das sprites
+
     def on(self):
         self.animation_name = "on"
-    #animaçao do fogo apagado
+
     def off(self):
         self.animation_name = "off"
 
     def loop(self):
-        sprites = self.fire[self.animation_name]# utilizando self.fire para obter as animações de fogo aceso e apagado
+        sprites = self.fire[self.animation_name]
         sprite_index = (self.animation_count //
                         self.ANIMATION_DELAY) % len(sprites)
-        self.image = sprites[sprite_index] #define o sprite atual do fogo
-        self.animation_count += 1#acrescenta o contador da animação do fogo
+        self.image = sprites[sprite_index]
+        self.animation_count += 1
 
         self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
-        self.mask = pygame.mask.from_surface(self.image)#mascara de colisao para o fogo
-        
-        #evitando que a contagem de animações não fique muito grande já que o fogo é estatico
-        if self.animation_count // self.ANIMATION_DELAY > len(sprites):
-            self.animation_count = 0 #se for além da animação volta para a contagem = 0
+        self.mask = pygame.mask.from_surface(self.image)
 
-class Heart(Object):
-    pass
+        if self.animation_count // self.ANIMATION_DELAY > len(sprites):
+            self.animation_count = 0
 
 # Criando o fundo do jogo
 def get_background(name):
@@ -300,6 +326,8 @@ def handle_move(player, objects):
 
     for obj in to_check:
         if obj and obj.name == "fire":
+            to_check = []
+            to_check = [*vertical_collide]
             player.make_hit()
 
 def main(window):
@@ -309,13 +337,24 @@ def main(window):
     block_size = 96
 
     player = Player(100, 100, 50, 50)
-    fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
+    
+    fire = Fire(750, HEIGHT - block_size*5 - 64, 16, 32)
     fire.on()
+    fire1 = Fire(180, HEIGHT - block_size - 64 , 16, 32)
+    fire1.on()
+
+    flag = Flag(1155, HEIGHT - block_size*6 - 128 , 64, 64)
+
+    
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
-    objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),
-               Block(block_size * 3, HEIGHT - block_size * 4, block_size), fire]
-
+    objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),  
+               Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), 
+               fire,fire1,flag,
+               Block(block_size * 6,HEIGHT - block_size * 5,block_size),Block(block_size * 7,HEIGHT - block_size * 5,block_size),Block(block_size * 8,HEIGHT - block_size * 5,block_size),Block(block_size * 9,HEIGHT - block_size * 5,block_size)
+               ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)]
+    
+    
     offset_x = 0
     scroll_area_width = 200
 
@@ -332,9 +371,10 @@ def main(window):
                 if event.key == pygame.K_SPACE and player.jump_count < 2: #se a tecla for espaço e o contador dos nossos pulos for menor que dois, vai poder pular duas vezes
                     player.jump()
 
-
+        flag.loop()
         player.loop(FPS)
         fire.loop()
+        fire1.loop()
         handle_move(player, objects)
         draw(window, background, bg_image, player, objects, offset_x) #chamando a def do fundo 
 
