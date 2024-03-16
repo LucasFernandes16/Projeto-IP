@@ -307,12 +307,17 @@ def main(window):
     block_size = 96
 
     player = Player(100, 100, 50, 50)
-    fire = Fire(180, HEIGHT - block_size - 64, 16, 32)
+    
+    fire = Fire(750, HEIGHT - block_size*5 - 64, 16, 32)
     fire.on()
+    fire1 = Fire(180, HEIGHT - block_size - 64 , 16, 32)
+    fire1.on()
+
+    
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
     objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),  
-               Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), fire,
+               Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), fire,fire1,
                Block(block_size * 6,HEIGHT - block_size * 5,block_size),Block(block_size * 7,HEIGHT - block_size * 5,block_size),Block(block_size * 8,HEIGHT - block_size * 5,block_size),Block(block_size * 9,HEIGHT - block_size * 5,block_size)
                ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)]
     
@@ -336,6 +341,7 @@ def main(window):
 
         player.loop(FPS)
         fire.loop()
+        fire1.loop()
         handle_move(player, objects)
         draw(window, background, bg_image, player, objects, offset_x) #chamando a def do fundo 
 
