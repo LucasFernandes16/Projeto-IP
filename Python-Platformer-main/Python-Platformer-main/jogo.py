@@ -68,7 +68,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     COLOR = (255, 0, 0)
     GRAVITY = 1
     SPRITES = load_sprite_sheets("MainCharacters", "NinjaFrog", 32, 32, True)
-    ANIMATION_DELAY = 5
+    ANIMATION_DELAY = 3
     
     # Aqui a altura e largura serão determinadas pela imagem q estamos usando para o nosso personagem
     def __init__(self, x, y, width, height):
@@ -296,8 +296,6 @@ def handle_move(player, objects):
 
     for obj in to_check:
         if obj and obj.name == "fire":
-            to_check = []
-            to_check = [*vertical_collide]
             player.make_hit()
 
 def main(window):
@@ -307,21 +305,13 @@ def main(window):
     block_size = 96
 
     player = Player(100, 100, 50, 50)
-    
-    fire = Fire(750, HEIGHT - block_size*5 - 64, 16, 32)
+    fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
     fire.on()
-    fire1 = Fire(180, HEIGHT - block_size - 64 , 16, 32)
-    fire1.on()
-
-    
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
-    objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),  
-               Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), fire,fire1,
-               Block(block_size * 6,HEIGHT - block_size * 5,block_size),Block(block_size * 7,HEIGHT - block_size * 5,block_size),Block(block_size * 8,HEIGHT - block_size * 5,block_size),Block(block_size * 9,HEIGHT - block_size * 5,block_size)
-               ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)]
-    
-    
+    objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),
+               Block(block_size * 3, HEIGHT - block_size * 4, block_size), fire]
+
     offset_x = 0
     scroll_area_width = 200
 
@@ -341,7 +331,6 @@ def main(window):
 
         player.loop(FPS)
         fire.loop()
-        fire1.loop()
         handle_move(player, objects)
         draw(window, background, bg_image, player, objects, offset_x) #chamando a def do fundo 
 
