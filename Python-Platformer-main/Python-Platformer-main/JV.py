@@ -15,4 +15,4 @@ def jump(self):
         self.jump_count += 1
         if self.jump_count == 1:
             self.fall_count = 0 #isso faz com que quando eu pule consiga me livrar da gravidade   
-            
+#####opa opa opaaa
