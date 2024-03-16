@@ -219,6 +219,7 @@ class Fire(Object):
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
             self.animation_count = 0
 
+
 # Criando o fundo do jogo
 def get_background(name):
     image = pygame.image.load(join("assets", "Background", name)) # Acessando a pasta que contém a imagem que usaremos de fundo
@@ -312,15 +313,15 @@ def main(window):
     fire.on()
     fire1 = Fire(180, HEIGHT - block_size - 64 , 16, 32)
     fire1.on()
-
+    
     
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
     objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),  
-               Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), fire,fire1,
+               Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), fire,fire1, fruit,
                Block(block_size * 6,HEIGHT - block_size * 5,block_size),Block(block_size * 7,HEIGHT - block_size * 5,block_size),Block(block_size * 8,HEIGHT - block_size * 5,block_size),Block(block_size * 9,HEIGHT - block_size * 5,block_size)
                ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)]
-    
+
     
     offset_x = 0
     scroll_area_width = 200
