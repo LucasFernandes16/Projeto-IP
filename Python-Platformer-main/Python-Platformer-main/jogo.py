@@ -68,7 +68,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     COLOR = (255, 0, 0)
     GRAVITY = 1
     SPRITES = load_sprite_sheets("MainCharacters", "NinjaFrog", 32, 32, True)
-    ANIMATION_DELAY = 3
+    ANIMATION_DELAY = 5
     
     # Aqui a altura e largura serão determinadas pela imagem q estamos usando para o nosso personagem
     def __init__(self, x, y, width, height):
@@ -296,6 +296,8 @@ def handle_move(player, objects):
 
     for obj in to_check:
         if obj and obj.name == "fire":
+            to_check = []
+            to_check = [*vertical_collide]
             player.make_hit()
 
 def main(window):
@@ -309,7 +311,8 @@ def main(window):
     fire.on()
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
-    objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),
+    objects = [*floor, Block(0, HEIGHT - block_size * 5, block_size),
+            Block(block_size * 4, HEIGHT - block_size * 3, block_size),
                Block(block_size * 3, HEIGHT - block_size * 4, block_size), fire]
 
     offset_x = 0
