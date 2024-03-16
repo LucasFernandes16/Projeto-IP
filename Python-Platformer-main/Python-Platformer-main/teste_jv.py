@@ -5,7 +5,6 @@ import pygame
 from os import listdir
 from os.path import isfile, join
 pygame.init()
-
 pygame.display.set_caption("Platformer")
 
 WIDTH, HEIGHT = 1000, 800
@@ -188,6 +187,37 @@ class Block(Object):
         self.image.blit(block, (0, 0))
         self.mask = pygame.mask.from_surface(self.image) #criando a máscara de colisão para ser ocultado da superfíce
 
+class Flag(Object):
+    ANIMATION_DELAY = 26
+
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height, "flag")
+        self.flag = load_sprite_sheets("Items", "Checkpoints", width, height)
+        self.image = self.flag["Checkpoint (No Flag)"][0]
+        self.mask = pygame.mask.from_surface(self.image)
+        self.animation_count = 0
+        self.animation_name = "Checkpoint (No Flag)"
+
+    def hitflag(self):
+        self.animation_name = "Checkpoint (Flag Out) (64x64)"
+
+    def noflag(self):
+        self.animation_name = "Checkpoint (No Flag)"
+
+    def loop(self):
+        sprites = self.flag[self.animation_name]
+        sprite_index = (self.animation_count //
+                        self.ANIMATION_DELAY) % len(sprites)
+        self.image = sprites[sprite_index]
+        self.animation_count += 1
+
+        self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
+        self.mask = pygame.mask.from_surface(self.image)
+
+        if self.animation_count // self.ANIMATION_DELAY > len(sprites):
+            self.animation_count = 0
+
+
 
 class Fire(Object):
     ANIMATION_DELAY = 3
@@ -313,11 +343,14 @@ def main(window):
     fire1 = Fire(180, HEIGHT - block_size - 64 , 16, 32)
     fire1.on()
 
+    flag = Flag(1155, HEIGHT - block_size*6 - 128 , 64, 64)
+
     
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
     objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),  
-               Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), fire,fire1,
+               Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), 
+               fire,fire1,flag,
                Block(block_size * 6,HEIGHT - block_size * 5,block_size),Block(block_size * 7,HEIGHT - block_size * 5,block_size),Block(block_size * 8,HEIGHT - block_size * 5,block_size),Block(block_size * 9,HEIGHT - block_size * 5,block_size)
                ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)]
     
@@ -338,7 +371,7 @@ def main(window):
                 if event.key == pygame.K_SPACE and player.jump_count < 2: #se a tecla for espaço e o contador dos nossos pulos for menor que dois, vai poder pular duas vezes
                     player.jump()
 
-
+        flag.loop()
         player.loop(FPS)
         fire.loop()
         fire1.loop()
