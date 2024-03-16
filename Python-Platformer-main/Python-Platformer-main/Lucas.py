@@ -63,6 +63,7 @@ def get_block(size):
     surface.blit(image, (0, 0), rect)
     return pygame.transform.scale2x(surface)
 
+
 # Criando o personagem
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
     COLOR = (255, 0, 0)
@@ -71,8 +72,8 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     ANIMATION_DELAY = 3
     
     # Aqui a altura e largura serão determinadas pela imagem q estamos usando para o nosso personagem
-    def __init__(self, x, y, width, height):
-        super().__init__()
+    def _init_(self, x, y, width, height):
+        super()._init_()
         self.rect = pygame.Rect(x, y, width, height) # Adicionado todos esses valores em retângulo fica mais fácil de acessar e resolver os problemas das colisões
         self.x_vel = 0
         self.y_vel = 0
@@ -83,6 +84,8 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.jump_count = 0
         self.hit = False
         self.hit_count = 0
+        self.health = 3
+        self.max_health = 5
 
     def jump(self):
         self.y_vel = -self.GRAVITY * 7 #a gravidade vai negativa para que ele pule no ar, ou seja fique mais "leve" e vá para cima
@@ -118,6 +121,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         if self.hit:
             self.hit_count += 1
         if self.hit_count > fps * 2:
+            self.health -= 1 #descresendo a vida
             self.hit = False
             self.hit_count = 0
 
@@ -158,19 +162,32 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.sprite = sprites[sprite_index]  # Define o sprite atual
         self.animation_count += 1 # Incrementa o contador de animação
         self.update() # Chama a função de atualização
+    
+    def full_hearts(self):
+
+        path = join("assets", "Items", 'Heart', "full_heart.png")
+        full_heart = pygame.image.load(path).convert_alpha()
+
+        for heart in range(self.health):
+            window.blit(full_heart,(heart *50,45))
 
     def update(self):
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y)) # Atualiza a posição do retângulo do sprite
         self.mask = pygame.mask.from_surface(self.sprite) # Atualiza a colisão do sprite
+        self.full_hearts() 
     
     # Desenha o player na tela
     def draw(self, win, offset_x):
+        path = join("assets", "Items", 'Heart', "full_heart.png")
+        full_heart = pygame.image.load(path).convert_alpha()
         win.blit(self.sprite, (self.rect.x - offset_x, self.rect.y))
+        for heart in range(self.health):
+            window.blit(full_heart,(heart *50,45))
 
 # Apenas definindo a classe de objetos para usar herença nos outros objetos q iremos criar no jogo
 class Object(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, name=None):
-        super().__init__()
+    def _init_(self, x, y, width, height, name=None):
+        super()._init_()
         self.rect = pygame.Rect(x, y, width, height)
         self.image = pygame.Surface((width, height), pygame.SRCALPHA)
         self.width = width
@@ -182,22 +199,18 @@ class Object(pygame.sprite.Sprite):
 
 # Criando os blocos
 class Block(Object):
-    def __init__(self, x, y, size):
-        super().__init__(x, y, size, size)#Repetimos size pq oq queremos é um quadrado
+    def _init_(self, x, y, size):
+        super()._init_(x, y, size, size) # Repetimos size pq oq queremos é um quadrado
         block = get_block(size)
         self.image.blit(block, (0, 0))
-        self.mask = pygame.mask.from_surface(self.image)#criando a máscara de colisão para ser ocultado da superfíce
+        self.mask = pygame.mask.from_surface(self.image) #criando a máscara de colisão para ser ocultado da superfíce
 
 
 class Fire(Object):
     ANIMATION_DELAY = 3
 
-    def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height, "fire")#passando o nome 'fire' para o objeto
-        self.fire = load_sprite_sheets("Traps", "Fire", width, height)#carregando as sprites das armadilhas de disparo automátioo 
-        self.image = self.fire["off"][0]#inicializando a imagem do fogo apagado'off'
     def _init_(self, x, y, width, height):
-        super()._init_(x, y, width, height, "fire")#passando o nome 'fire' para o objeto
+        super()._init_(x, y, width, height, "fire")# passando o nome 'fire' para o objeto
         self.fire = load_sprite_sheets("Traps", "Fire", width, height)#carregando as sprites das armadilhas de disparo automátioo 
         self.image = self.fire["off"][0]#inicializando a imagem do fogo apagado'off'
         self.mask = pygame.mask.from_surface(self.image)
@@ -211,10 +224,10 @@ class Fire(Object):
         self.animation_name = "off"
 
     def loop(self):
-        sprites = self.fire[self.animation_name]#utilizando self.fire para obter as animações de fogo aceso e apagado
+        sprites = self.fire[self.animation_name]# utilizando self.fire para obter as animações de fogo aceso e apagado
         sprite_index = (self.animation_count //
                         self.ANIMATION_DELAY) % len(sprites)
-        self.image = sprites[sprite_index]#define o sprite atual do fogo
+        self.image = sprites[sprite_index] #define o sprite atual do fogo
         self.animation_count += 1#acrescenta o contador da animação do fogo
 
         self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
@@ -222,10 +235,21 @@ class Fire(Object):
         
         #evitando que a contagem de animações não fique muito grande já que o fogo é estatico
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
-            self.animation_count = 0#se for além da animação volta para a contagem = 0
+            self.animation_count = 0 #se for além da animação volta para a contagem = 0
 
 class Heart(Object):
-    pass
+    
+    def _init_(self, x, y, width, height):
+        super()._init_(x, y, width, height, "heart")# passando o nome 'fire' para o objeto
+        self.heart = load_sprite_sheets("Items", "Heart", width, height)#carregando as sprites das armadilhas de disparo automátioo 
+        self.image = self.heart["full_heart"][0]#inicializando a imagem do fogo apagado'off'
+        self.mask = pygame.mask.from_surface(self.image)
+        self.animation_name = "full_heart"
+    #definindo a classe autodidata que puxa a animaçao do fogo aceso das sprites
+    def fullheart(self):
+        self.animation_name = "full_heart"
+    #animaçao do fogo apagado
+
 
 # Criando o fundo do jogo
 def get_background(name):
@@ -314,11 +338,12 @@ def main(window):
 
     player = Player(100, 100, 50, 50)
     fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
+    heart = Heart(200, HEIGHT - block_size - 64, 38, 32)
     fire.on()
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
     objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),
-               Block(block_size * 3, HEIGHT - block_size * 4, block_size), fire]
+               Block(block_size * 3, HEIGHT - block_size * 4, block_size), fire, heart]
 
     offset_x = 0
     scroll_area_width = 200
@@ -336,11 +361,10 @@ def main(window):
                 if event.key == pygame.K_SPACE and player.jump_count < 2: #se a tecla for espaço e o contador dos nossos pulos for menor que dois, vai poder pular duas vezes
                     player.jump()
 
-
         player.loop(FPS)
         fire.loop()
         handle_move(player, objects)
-        draw(window, background, bg_image, player, objects, offset_x) #chamando a def do fundo 
+        draw(window, background, bg_image, player, objects, offset_x, ) #chamando a def do fundo 
 
         if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                 (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
@@ -350,5 +374,5 @@ def main(window):
     quit()
 
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     main(window)
