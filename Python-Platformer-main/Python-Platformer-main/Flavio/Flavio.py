@@ -80,3 +80,34 @@ class Collectible(Object):
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
             self.animation_count = 0
 
+
+
+
+class Flag(Object):
+    ANIMATION_DELAY = 4
+
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height, "flag")
+        self.flag = load_sprite_sheets("Items", "Checkpoints", width, height)
+        self.image = self.flag["Checkpoint (No Flag)"][0]
+        self.animation_count = 0
+        self.animation_name = "Checkpoint (No Flag)"
+
+    def hit_flag(self):
+        self.animation_name = "Checkpoint (Flag Out) (64x64)"
+
+    def no_flag(self):
+        self.animation_name = "Checkpoint (No Flag)"
+
+    def loop(self):
+        sprites = self.flag[self.animation_name]
+        sprite_index = (self.animation_count //
+                        self.ANIMATION_DELAY) % len(sprites)
+        self.image = sprites[sprite_index]
+        self.animation_count += 1
+
+        self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
+
+        if self.animation_count // self.ANIMATION_DELAY > len(sprites):
+            self.animation_count = 0
+
