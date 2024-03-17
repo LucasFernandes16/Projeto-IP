@@ -165,11 +165,11 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     
     def full_hearts(self):
 
-        path = join("assets", "Items", 'Heart', "full_heart.png")
-        full_heart = pygame.image.load(path).convert_alpha()
+        path = join("assets", "Items", 'Heart', "heart.png")
+        heart = pygame.image.load(path).convert_alpha()
 
         for heart in range(self.health):
-            window.blit(full_heart,(heart *50,45))
+            window.blit(heart,(heart *50,45))
 
     def update(self):
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y)) # Atualiza a posição do retângulo do sprite
@@ -178,11 +178,11 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     
     # Desenha o player na tela
     def draw(self, win, offset_x):
-        path = join("assets", "Items", 'Heart', "full_heart.png")
-        full_heart = pygame.image.load(path).convert_alpha()
+        path = join("assets", "Items", 'Heart', "heart.png")
+        heart = pygame.image.load(path).convert_alpha()
         win.blit(self.sprite, (self.rect.x - offset_x, self.rect.y))
         for heart in range(self.health):
-            window.blit(full_heart,(heart *50,45))
+            window.blit(heart,(heart *50,45))
 
 # Apenas definindo a classe de objetos para usar herença nos outros objetos q iremos criar no jogo
 class Object(pygame.sprite.Sprite):
@@ -242,13 +242,14 @@ class Heart(Object):
     def _init_(self, x, y, width, height):
         super()._init_(x, y, width, height, "heart")# passando o nome 'fire' para o objeto
         self.heart = load_sprite_sheets("Items", "Heart", width, height)#carregando as sprites das armadilhas de disparo automátioo 
-        self.image = self.heart["full_heart"][0]#inicializando a imagem do fogo apagado'off'
+        self.image = self.heart["heart"][0]#inicializando a imagem do fogo apagado'off'
         self.mask = pygame.mask.from_surface(self.image)
-        self.animation_name = "full_heart"
+        self.animation_name = "heart"
     #definindo a classe autodidata que puxa a animaçao do fogo aceso das sprites
     def fullheart(self):
-        self.animation_name = "full_heart"
+        self.animation_name = "heart"
     #animaçao do fogo apagado
+
 
 
 # Criando o fundo do jogo
@@ -338,7 +339,7 @@ def main(window):
 
     player = Player(100, 100, 50, 50)
     fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
-    heart = Heart(200, HEIGHT - block_size - 64, 38, 32)
+    heart = Heart(200, HEIGHT - block_size - 64, 32, 32)
     fire.on()
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
@@ -374,5 +375,5 @@ def main(window):
     quit()
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main(window)
