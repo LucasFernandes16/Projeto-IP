@@ -48,3 +48,4 @@ def update_sprite(self):
 def update():
     self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))  # Atualiza a posição do retângulo do sprite
     self.mask = pygame.mask.from_surface(self.sprite)  # Atualiza a colisão do sprite
+
