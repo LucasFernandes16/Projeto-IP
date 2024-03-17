@@ -2,7 +2,6 @@ import os
 import random
 import math
 import pygame
-from Flavio import *
 from os import listdir
 from os.path import isfile, join
 pygame.init()
