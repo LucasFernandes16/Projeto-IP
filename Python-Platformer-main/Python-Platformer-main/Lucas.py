@@ -6,13 +6,15 @@ from os import listdir
 from os.path import isfile, join
 pygame.init()
 pygame.display.set_caption("Platformer")
+pygame.mixer.init()
 
 WIDTH, HEIGHT = 1000, 800
 FPS = 60
 PLAYER_VEL = 5
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
-
+music = pygame.mixer.music.load("metallica-fight-fire-with-fire-doom.wav")
+pygame.mixer.music.play(-1)
 
 def flip(sprites):
     # Função que inverte as imagens horizontalmente
@@ -127,13 +129,18 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
 
         if self.hit:
             self.hit_count += 1
-        if self.hit_count > fps * 1.2:
+        if self.hit_count > fps * 1:
             self.health -= 1 # decrescendo a quantidade de coração assim que o contador de dano parar
             self.hit = False
-            self.hit_count = 0
-            if self.health < 0:
+            self.hit_count = 0  
+        elif self.fall_count > 100:
+            self.health -=1
+        
+        if self.health < 0:
                 self.alive = False# mata o boneco quando a vida estiver 0
 
+            
+            
         self.fall_count += 1
         self.update_sprite()
 
@@ -175,8 +182,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     def update(self):
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y)) # Atualiza a posição do retângulo do sprite
         self.mask = pygame.mask.from_surface(self.sprite) # Atualiza a colisão do sprite
-       
-
+    
     def full_hearts(self):# criando a classe full_heart
 
         path = join("assets", "Items", 'Heart', "full_heart.png")
@@ -194,8 +200,6 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
 
         for heart in range(self.health):
             window.blit(full_heart,(heart *50,45))#adicionando os coracoes com base na quantidade de coracao do personagem no canto superior esquerdo
-
-    
 # Apenas definindo a classe de objetos para usar herença nos outros objetos q iremos criar no jogo
 class Object(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, name=None):
@@ -305,10 +309,17 @@ def draw(window, background, bg_image, player, objects, offset_x, coletavel):
     
     for colect in coletavel:
         colect.draw(window, offset_x)
-
+    
     player.draw(window, offset_x)
+
     if player.alive == False:# preenchendo a tela com preto quando o boneco tiver vida menor que 0
         window.fill((0,0,0))
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render('Game Over', True, (250,250,250))
+        textRect = text.get_rect()
+        textRect.center = (HEIGHT // 1.6 , HEIGHT // 2)
+        window.blit(text, textRect)#escrevendo na tela a mensagem Game Over
+
 
     pygame.display.update() # Atualizando a tela a cada frame
 
