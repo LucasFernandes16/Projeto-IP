@@ -49,3 +49,6 @@ def update():
     self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))  # Atualiza a posição do retângulo do sprite
     self.mask = pygame.mask.from_surface(self.sprite)  # Atualiza a colisão do sprite
 
+pygame.mixer.init() # Inicializa o mixer
+
+music = pygame.mixer.music.load("metallica-fight-fire-with-fire-8-bit.wav") # Carrega a música  
