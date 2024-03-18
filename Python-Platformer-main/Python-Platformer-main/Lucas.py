@@ -99,7 +99,8 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
 
     def make_hit(self):
         self.hit = True
-        
+
+
     def move_left(self, vel):
         self.x_vel = -vel # a velocidade é negativa, pq se vc quiser ir para trás estará removendo os quadros relativo a tela do jogo, recomendo verem essa parte do vídeo e uma representação dos eixos no pygame
         if self.direction != "left":
@@ -119,7 +120,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         if self.hit:
             self.hit_count += 1
         if self.hit_count > fps * 2:
-            self.health -= 1# decrescendo a quantidade de coração assim que o contador de dano parar
+            self.health -= 1 # decrescendo a quantidade de coração assim que o contador de dano parar
             self.hit = False
             self.hit_count = 0
 
@@ -171,7 +172,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         full_heart = pygame.image.load(path).convert_alpha()
 
         for heart in range(self.health):
-            window.blit(full_heart,(heart *50,45))
+            window.blit(full_heart,(heart *50,45)) #adicionando os coracoes com base na quantidade de coracao do personagem no canto superior esquerdo
     
     # Desenha o player na tela
     def draw(self, win, offset_x):
@@ -324,6 +325,7 @@ def main(window):
     player = Player(100, 100, 50, 50)
     fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
     fire.on()
+
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
     objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),
