@@ -5,7 +5,6 @@ import pygame
 from os import listdir
 from os.path import isfile, join
 pygame.init()
-
 pygame.display.set_caption("Platformer")
 
 WIDTH, HEIGHT = 1000, 800
@@ -26,28 +25,37 @@ def load_sprite_sheets(dir1, dir2, width, height, direction=False):
     
     # Função para carregar spritesheets e criar sprites a partir delas
     path = join("assets", dir1, dir2)
-    images = [f for f in listdir(path) if isfile(join(path, f))]
+    # Lista todos os arquivos no diretório, filtrando apenas os arquivos que são arquivos de fato
 
-    all_sprites = {}
+    images = [f for f in listdir(path) if isfile(join(path, f))] 
 
+    all_sprites = {} # Dicionário para armazenar todos os sprites carregados
+
+    # Itera sobre cada imagem encontrada no diretório
     for image in images:
-        sprite_sheet = pygame.image.load(join(path, image)).convert_alpha()
+        sprite_sheet = pygame.image.load(join(path, image)).convert_alpha() # Carrega a sprite sheet como uma superfície
 
-        sprites = []
-        for i in range(sprite_sheet.get_width() // width):
-            surface = pygame.Surface((width, height), pygame.SRCALPHA, 32)
+        sprites = [] # Lista para armazenar os sprites individuais da sprite sheet
+        
+        for i in range(sprite_sheet.get_width() // width):  # Loop para percorrer horizontalmente a sprite sheet
+            surface = pygame.Surface((width, height), pygame.SRCALPHA, 32) # Cria uma superfície para cada sprite individual
+           
+            # Define a região do sprite na sprite sheet
             rect = pygame.Rect(i * width, 0, width, height)
-            surface.blit(sprite_sheet, (0, 0), rect)
-            sprites.append(pygame.transform.scale2x(surface))
-
+            surface.blit(sprite_sheet, (0, 0), rect) # Copia o sprite da sprite sheet para a superfície
+            # Escala o sprite para o dobro do tamanho
+            sprites.append(pygame.transform.scale2x(surface)) 
+        
+        # Verifica se a direção está ativada
         if direction:
+            # Adiciona os sprites invertidos para a direita e para a esquerda
             all_sprites[image.replace(".png", "") + "_right"] = sprites
-            all_sprites[image.replace(".png", "") + "_left"] = flip(sprites)
+            all_sprites[image.replace(".png", "") + "_left"] = flip(sprites) # Chama a função flip para inverter os sprites
+        # Adiciona os sprites sem alteração ao dicionário
         else:
             all_sprites[image.replace(".png", "")] = sprites
 
     return all_sprites
-
 
 def get_block(size):
     path = join("assets", "Terrain", "Terrain.png") # Acessa a pasta q contém a imagem do bloco
@@ -68,7 +76,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     COLOR = (255, 0, 0)
     GRAVITY = 1
     SPRITES = load_sprite_sheets("MainCharacters", "NinjaFrog", 32, 32, True)
-    ANIMATION_DELAY = 3
+    ANIMATION_DELAY = 5
     
     # Aqui a altura e largura serão determinadas pela imagem q estamos usando para o nosso personagem
     def __init__(self, x, y, width, height):
@@ -84,7 +92,8 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.hit = False
         self.hit_count = 0
         self.health = 3
-
+        self.alive = True # alive definindo se o boneco esta vivo ou morto
+        
     def jump(self):
         self.y_vel = -self.GRAVITY * 7 #a gravidade vai negativa para que ele pule no ar, ou seja fique mais "leve" e vá para cima
         self.animation_count = 0
@@ -99,7 +108,6 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
 
     def make_hit(self):
         self.hit = True
-
 
     def move_left(self, vel):
         self.x_vel = -vel # a velocidade é negativa, pq se vc quiser ir para trás estará removendo os quadros relativo a tela do jogo, recomendo verem essa parte do vídeo e uma representação dos eixos no pygame
@@ -119,10 +127,12 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
 
         if self.hit:
             self.hit_count += 1
-        if self.hit_count > fps * 2:
+        if self.hit_count > fps * 1.2:
             self.health -= 1 # decrescendo a quantidade de coração assim que o contador de dano parar
             self.hit = False
             self.hit_count = 0
+            if self.health < 0:
+                self.alive = False# mata o boneco quando a vida estiver 0
 
         self.fall_count += 1
         self.update_sprite()
@@ -165,7 +175,8 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     def update(self):
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y)) # Atualiza a posição do retângulo do sprite
         self.mask = pygame.mask.from_surface(self.sprite) # Atualiza a colisão do sprite
-    
+       
+
     def full_hearts(self):# criando a classe full_heart
 
         path = join("assets", "Items", 'Heart', "full_heart.png")
@@ -176,15 +187,15 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
     
     # Desenha o player na tela
     def draw(self, win, offset_x):
-
         win.blit(self.sprite, (self.rect.x - offset_x, self.rect.y))
-
+        
         path = join("assets", "Items", 'Heart', "full_heart.png")#carregando a sprite do coracao
         full_heart = pygame.image.load(path).convert_alpha()
 
         for heart in range(self.health):
             window.blit(full_heart,(heart *50,45))#adicionando os coracoes com base na quantidade de coracao do personagem no canto superior esquerdo
 
+    
 # Apenas definindo a classe de objetos para usar herença nos outros objetos q iremos criar no jogo
 class Object(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, name=None):
@@ -205,6 +216,37 @@ class Block(Object):
         block = get_block(size)
         self.image.blit(block, (0, 0))
         self.mask = pygame.mask.from_surface(self.image) #criando a máscara de colisão para ser ocultado da superfíce
+
+class Flag(Object):
+    ANIMATION_DELAY = 26
+
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height, "flag")
+        self.flag = load_sprite_sheets("Items", "Checkpoints", width, height)
+        self.image = self.flag["Checkpoint (No Flag)"][0]
+        self.mask = pygame.mask.from_surface(self.image)
+        self.animation_count = 0
+        self.animation_name = "Checkpoint (No Flag)"
+
+    def hitflag(self):
+        self.animation_name = "Checkpoint (Flag Out) (64x64)"
+
+    def noflag(self):
+        self.animation_name = "Checkpoint (No Flag)"
+
+    def loop(self):
+        sprites = self.flag[self.animation_name]
+        sprite_index = (self.animation_count //
+                        self.ANIMATION_DELAY) % len(sprites)
+        self.image = sprites[sprite_index]
+        self.animation_count += 1
+
+        self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
+        self.mask = pygame.mask.from_surface(self.image)
+
+        if self.animation_count // self.ANIMATION_DELAY > len(sprites):
+            self.animation_count = 0
+
 
 
 class Fire(Object):
@@ -252,7 +294,7 @@ def get_background(name):
     return tiles, image
 
 # Desenhando o fundo
-def draw(window, background, bg_image, player, objects, offset_x):
+def draw(window, background, bg_image, player, objects, offset_x, coletavel):
     # Percorrendo cada bloco para poder desenhar sobre ele
     for tile in background:
         # window.blit é usado para atualizar o conteúdo da janela do jogo a cada quadro
@@ -260,8 +302,13 @@ def draw(window, background, bg_image, player, objects, offset_x):
 
     for obj in objects:
         obj.draw(window, offset_x)
+    
+    for colect in coletavel:
+        colect.draw(window, offset_x)
 
     player.draw(window, offset_x)
+    if player.alive == False:# preenchendo a tela com preto quando o boneco tiver vida menor que 0
+        window.fill((0,0,0))
 
     pygame.display.update() # Atualizando a tela a cada frame
 
@@ -314,6 +361,8 @@ def handle_move(player, objects):
 
     for obj in to_check:
         if obj and obj.name == "fire":
+            to_check = []
+            to_check = [*vertical_collide]
             player.make_hit()
 
 def main(window):
@@ -323,14 +372,24 @@ def main(window):
     block_size = 96
 
     player = Player(100, 100, 50, 50)
-    fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
+    
+    fire = Fire(750, HEIGHT - block_size*5 - 64, 16, 32)
     fire.on()
+    fire1 = Fire(180, HEIGHT - block_size - 64 , 16, 32)
+    fire1.on()
 
+    flag = Flag(1155, HEIGHT - block_size*6 - 128 , 64, 64)
+
+    
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
-    objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),
-               Block(block_size * 3, HEIGHT - block_size * 4, block_size), fire]
-
+    objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),  
+               Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), 
+               fire,fire1,
+               Block(block_size * 6,HEIGHT - block_size * 5,block_size),Block(block_size * 7,HEIGHT - block_size * 5,block_size),Block(block_size * 8,HEIGHT - block_size * 5,block_size),Block(block_size * 9,HEIGHT - block_size * 5,block_size)
+               ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)]
+    coletavel = [flag]
+    
     offset_x = 0
     scroll_area_width = 200
 
@@ -347,11 +406,12 @@ def main(window):
                 if event.key == pygame.K_SPACE and player.jump_count < 2: #se a tecla for espaço e o contador dos nossos pulos for menor que dois, vai poder pular duas vezes
                     player.jump()
 
-
+        flag.loop()
         player.loop(FPS)
         fire.loop()
+        fire1.loop()
         handle_move(player, objects)
-        draw(window, background, bg_image, player, objects, offset_x) #chamando a def do fundo 
+        draw(window, background, bg_image, player, objects, offset_x, coletavel) #chamando a def do fundo 
 
         if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                 (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
