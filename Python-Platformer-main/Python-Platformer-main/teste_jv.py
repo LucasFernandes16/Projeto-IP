@@ -319,6 +319,11 @@ def draw(window, background, bg_image, player, objects, offset_x, coletavel):
 
     if player.alive == False:# preenchendo a tela com preto quando o boneco tiver vida menor que 0
         window.fill((0,0,0))
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render('Game Over', True, (250,250,250))
+        textRect = text.get_rect()
+        textRect.center = (HEIGHT // 1.6 , HEIGHT // 2)
+        window.blit(text, textRect)#escrevendo na tela a mensagem Game Over
 
     pygame.display.update() # Atualizando a tela a cada frame
 
