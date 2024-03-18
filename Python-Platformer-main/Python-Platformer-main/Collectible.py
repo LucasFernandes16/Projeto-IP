@@ -15,7 +15,7 @@ class Collectible(Object):
         
     def loop(self):
         if self.hit:
-            sprite_sheet = "Collected"
+            self.animation_name = "Collected"
         
         sprites = self.collectible[self.animation_name] # Obtém os sprites correspondentes à sprite sheet atual
         

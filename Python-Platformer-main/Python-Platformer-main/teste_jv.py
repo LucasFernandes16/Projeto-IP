@@ -91,7 +91,8 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.jump_count = 0
         self.hit = False
         self.hit_count = 0
-
+        self.health = 3
+        
     def jump(self):
         self.y_vel = -self.GRAVITY * 7 #a gravidade vai negativa para que ele pule no ar, ou seja fique mais "leve" e vá para cima
         self.animation_count = 0
@@ -125,7 +126,8 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
 
         if self.hit:
             self.hit_count += 1
-        if self.hit_count > fps * 2:
+        if self.hit_count > fps * 1.2:
+            self.health -= 1 # decrescendo a quantidade de coração assim que o contador de dano parar
             self.hit = False
             self.hit_count = 0
 
@@ -171,10 +173,23 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y)) # Atualiza a posição do retângulo do sprite
         self.mask = pygame.mask.from_surface(self.sprite) # Atualiza a colisão do sprite
     
+    def full_hearts(self):# criando a classe full_heart
+
+        path = join("assets", "Items", 'Heart', "full_heart.png")
+        full_heart = pygame.image.load(path).convert_alpha()
+
+        for heart in range(self.health):
+            window.blit(full_heart,(heart *50,45)) #adicionando os coracoes com base na quantidade de coracao do personagem no canto superior esquerdo
+    
     # Desenha o player na tela
     def draw(self, win, offset_x):
         win.blit(self.sprite, (self.rect.x - offset_x, self.rect.y))
+        
+        path = join("assets", "Items", 'Heart', "full_heart.png")#carregando a sprite do coracao
+        full_heart = pygame.image.load(path).convert_alpha()
 
+        for heart in range(self.health):
+            window.blit(full_heart,(heart *50,45))#adicionando os coracoes com base na quantidade de coracao do personagem no canto superior esquerdo
 # Apenas definindo a classe de objetos para usar herença nos outros objetos q iremos criar no jogo
 class Object(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, name=None):

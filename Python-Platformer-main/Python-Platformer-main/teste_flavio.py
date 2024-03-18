@@ -172,6 +172,14 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y)) # Atualiza a posição do retângulo do sprite
         self.mask = pygame.mask.from_surface(self.sprite) # Atualiza a colisão do sprite
     
+    def full_hearts(self):# criando a classe full_heart
+
+        path = join("assets", "Items", 'Heart', "full_heart.png")
+        full_heart = pygame.image.load(path).convert_alpha()
+
+        for heart in range(self.health):
+            window.blit(full_heart,(heart *50,45)) #adicionando os coracoes com base na quantidade de coracao do personagem no canto superior esquerdo
+    
     # Desenha o player na tela
     def draw(self, win, offset_x):
         win.blit(self.sprite, (self.rect.x - offset_x, self.rect.y))
@@ -192,28 +200,34 @@ class Object(pygame.sprite.Sprite):
 # Criando os blocos
 class Block(Object):
     def __init__(self, x, y, size):
-        super().__init__(x, y, size, size) # Repetimos size pq oq queremos é um quadrado
+        super().__init__(x, y, size, size, "block") # Repetimos size pq oq queremos é um quadrado
         block = get_block(size)
         self.image.blit(block, (0, 0))
         self.mask = pygame.mask.from_surface(self.image) #criando a máscara de colisão para ser ocultado da superfíce
 
 class Flag(Object):
-    ANIMATION_DELAY = 26
+    ANIMATION_DELAY = 4
 
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height,):
         super().__init__(x, y, width, height, "flag")
         self.flag = load_sprite_sheets("Items", "Checkpoints", width, height)
         self.image = self.flag["Checkpoint (No Flag)"][0]
         self.animation_count = 0
         self.animation_name = "Checkpoint (No Flag)"
+        self.hit = False
 
-    def hitflag(self):
+    def hit_flag(self):
+        self.hit = True
         self.animation_name = "Checkpoint (Flag Out) (64x64)"
 
-    def noflag(self):
-        self.animation_name = "Checkpoint (No Flag)"
+    def flag_idle(self):
+        self.animation_name = "Checkpoint (Flag Idle)(64x64)"
+        
 
-    def loop(self):
+    def loop(self): 
+        if self.animation_count == len(sprites):
+            self.animation_name = "Checkpoint (Flag Idle)(64x64)"
+        
         sprites = self.flag[self.animation_name]
         sprite_index = (self.animation_count //
                         self.ANIMATION_DELAY) % len(sprites)
