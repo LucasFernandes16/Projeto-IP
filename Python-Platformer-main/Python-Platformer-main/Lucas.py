@@ -252,12 +252,12 @@ class Heart(Object):
     def _init_(self, x, y, width, height):
         super()._init_(x, y, width, height, "heart")# passando o nome 'fire' para o objeto
         self.heart = load_sprite_sheets("Items", "Heart", width, height)#carregando as sprites das armadilhas de disparo automátioo 
-        self.image = self.heart["heart"][0]#inicializando a imagem do fogo apagado'off'
+        self.image = self.heart["full_heart"][0]#inicializando a imagem do fogo apagado'off'
         self.mask = pygame.mask.from_surface(self.image)
-        self.animation_name = "heart"
+        self.animation_name = "full_heart"
     #definindo a classe autodidata que puxa a animaçao do fogo aceso das sprites
     def fullheart(self):
-        self.animation_name = "heart"
+        self.animation_name = "full_heart"
     #animaçao do fogo apagado
 
 
