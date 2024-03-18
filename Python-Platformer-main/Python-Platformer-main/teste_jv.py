@@ -288,7 +288,7 @@ def get_background(name):
     return tiles, image
 
 # Desenhando o fundo
-def draw(window, background, bg_image, player, objects, offset_x):
+def draw(window, background, bg_image, player, objects, offset_x, coletavel):
     # Percorrendo cada bloco para poder desenhar sobre ele
     for tile in background:
         # window.blit é usado para atualizar o conteúdo da janela do jogo a cada quadro
@@ -296,6 +296,9 @@ def draw(window, background, bg_image, player, objects, offset_x):
 
     for obj in objects:
         obj.draw(window, offset_x)
+    
+    for colect in coletavel:
+        colect.draw(window, offset_x)
 
     player.draw(window, offset_x)
 
@@ -374,10 +377,10 @@ def main(window):
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
     objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),  
                Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), 
-               fire,fire1,flag,
+               fire,fire1,
                Block(block_size * 6,HEIGHT - block_size * 5,block_size),Block(block_size * 7,HEIGHT - block_size * 5,block_size),Block(block_size * 8,HEIGHT - block_size * 5,block_size),Block(block_size * 9,HEIGHT - block_size * 5,block_size)
                ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)]
-    
+    coletavel = [flag]
     
     offset_x = 0
     scroll_area_width = 200
@@ -400,7 +403,7 @@ def main(window):
         fire.loop()
         fire1.loop()
         handle_move(player, objects)
-        draw(window, background, bg_image, player, objects, offset_x) #chamando a def do fundo 
+        draw(window, background, bg_image, player, objects, offset_x, coletavel) #chamando a def do fundo 
 
         if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                 (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):

@@ -218,14 +218,15 @@ class Flag(Object):
 
     def hit_flag(self):
         self.hit = True
-        self.animation_name = "Checkpoint (Flag Out) (64x64)"
 
     def flag_idle(self):
         self.animation_name = "Checkpoint (Flag Idle)(64x64)"
         
 
     def loop(self): 
-        if self.animation_count == len(sprites):
+        if self.hit:
+            self.image = self.flag["Checkpoint (Flag Out) (64x64)"][0]
+        elif self.animation_count == 25:
             self.animation_name = "Checkpoint (Flag Idle)(64x64)"
         
         sprites = self.flag[self.animation_name]
@@ -235,7 +236,7 @@ class Flag(Object):
         self.animation_count += 1
 
         self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
-
+        self.mask = pygame.mask.from_surface(self.image)
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
             self.animation_count = 0
 
@@ -271,6 +272,39 @@ class Fire(Object):
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
             self.animation_count = 0
 
+class Collectible(Object):
+    ANIMATION_DELAY = 3
+    
+    def __init__(self, x, y, width, height, name):
+        super().__init__(x, y, width, height, "Fruits")
+        self.collectible = load_sprite_sheets("Items", "Fruits", width, height)
+        self.image = self.collectible[name][0]
+        self.mask = pygame.mask.from_surface(self.image)
+        self.animation_count = 0
+        self.animation_name = name
+        self.hit = False
+
+    def hit_collectible(self):
+        self.hit = True
+        
+    def loop(self):
+        if self.hit:
+            self.image = self.collectible[Collected][0]
+        
+        sprites = self.collectible[self.animation_name] # Obtém os sprites correspondentes à sprite sheet atual
+        
+        sprite_index = (self.animation_count //
+                        self.ANIMATION_DELAY) % len(sprites) # Calcula o índice do sprite a ser exibido com base no atraso entre as animações
+        
+        self.sprite = sprites[sprite_index]  # Define o sprite atual
+        self.animation_count += 1 # Incrementa o contador de animação
+        self.update() # Chama a função de atualização
+        self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y)) # Atualiza a posição do retângulo do sprite
+        self.mask = pygame.mask.from_surface(self.sprite) # Atualiza a colisão do sprite
+        
+        if self.animation_count // self.ANIMATION_DELAY > len(sprites):
+            self.animation_count = 0
+
 # Criando o fundo do jogo
 def get_background(name):
     image = pygame.image.load(join("assets", "Background", name)) # Acessando a pasta que contém a imagem que usaremos de fundo
@@ -300,8 +334,9 @@ def draw(window, background, bg_image, player, objects, offset_x):
     pygame.display.update() # Atualizando a tela a cada frame
 
 
-def handle_vertical_collision(player, objects, dy):
+def handle_vertical_collision(player, objects, collectible, dy):
     collided_objects = []
+    
     for obj in objects:
         if pygame.sprite.collide_mask(player, obj): # Pela herança da classe sprite.Sprite usamos a "mask" dela para facilitar a nossa colisão
         # Passamos o nosso player e os objetos q iremos colidir
@@ -313,8 +348,16 @@ def handle_vertical_collision(player, objects, dy):
                 player.hit_head()
 
             collided_objects.append(obj)
-
     return collided_objects
+
+def vertical_collision_collectible(player, collectible, dy):
+    collided_collectible = []
+
+    for obj in collectible:
+        if pygame.sprite.collide_mask(player, obj):    
+            collided_collectible.append(obj)
+
+    return collided_collectible
 
 
 def collide(player, objects, dx):
@@ -349,6 +392,8 @@ def handle_move(player, objects):
     for obj in to_check:
         if obj and obj.name == "fire":
             player.make_hit()
+        if obj and obj.name == "flag":
+            Flag.hit_flag(self)
 
 def main(window):
     clock = pygame.time.Clock()
@@ -364,8 +409,9 @@ def main(window):
     fire1.on()
 
     flag = Flag(1155, HEIGHT - block_size*6 - 128 , 64, 64)
+    flag.flag_idle()
+    fruit = Collectible(230, HEIGHT - block_size - 64 , 32, 32, "Strawberry")
 
-    
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
     objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),  
@@ -374,6 +420,7 @@ def main(window):
                Block(block_size * 6,HEIGHT - block_size * 5,block_size),Block(block_size * 7,HEIGHT - block_size * 5,block_size),Block(block_size * 8,HEIGHT - block_size * 5,block_size),Block(block_size * 9,HEIGHT - block_size * 5,block_size)
                ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)]
     
+    collectible = [fruit]
     
     offset_x = 0
     scroll_area_width = 200
@@ -391,6 +438,7 @@ def main(window):
                 if event.key == pygame.K_SPACE and player.jump_count < 2: #se a tecla for espaço e o contador dos nossos pulos for menor que dois, vai poder pular duas vezes
                     player.jump()
 
+        fruit.loop()
         flag.loop()
         player.loop(FPS)
         fire.loop()

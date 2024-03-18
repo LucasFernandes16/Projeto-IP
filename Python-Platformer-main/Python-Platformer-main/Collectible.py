@@ -15,7 +15,7 @@ class Collectible(Object):
         
     def loop(self):
         if self.hit:
-            self.animation_name = "Collected"
+            self.image = self.collectible["Collected"][0]
         
         sprites = self.collectible[self.animation_name] # Obtém os sprites correspondentes à sprite sheet atual
         
@@ -47,14 +47,15 @@ class Flag(Object):
 
     def hit_flag(self):
         self.hit = True
-        self.animation_name = "Checkpoint (Flag Out) (64x64)"
 
     def flag_idle(self):
         self.animation_name = "Checkpoint (Flag Idle)(64x64)"
         
 
     def loop(self): 
-        if self.animation_count == len(sprites):
+        if self.hit:
+            self.image = self.flag["Checkpoint (Flag Out) (64x64)"][0]
+        elif self.animation_count == 25:
             self.animation_name = "Checkpoint (Flag Idle)(64x64)"
         
         sprites = self.flag[self.animation_name]
