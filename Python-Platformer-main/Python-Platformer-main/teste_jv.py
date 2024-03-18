@@ -130,7 +130,9 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
             self.health -= 1 # decrescendo a quantidade de coração assim que o contador de dano parar
             self.hit = False
             self.hit_count = 0
-
+        elif self.fall_count
+            
+            
         self.fall_count += 1
         self.update_sprite()
 
