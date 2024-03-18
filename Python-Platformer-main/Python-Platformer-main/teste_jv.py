@@ -67,7 +67,7 @@ def get_block(size):
     surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)
 
     # Para carregar a imagem desejada iniciamos a contar de 96 pixels de distância do eixo x e teremos o bloco verde
-    rect = pygame.Rect(96, 0, size, size) 
+    rect = pygame.Rect(96, 128, size, size) 
     # Isso significa q cada bloco quadrado vísivel possui 8 pixels, 96/8 = 12 quadrados de distância em x
 
     surface.blit(image, (0, 0), rect)
@@ -77,7 +77,7 @@ def get_block(size):
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
     COLOR = (255, 0, 0)
     GRAVITY = 1
-    SPRITES = load_sprite_sheets("MainCharacters", "NinjaFrog", 32, 32, True)
+    SPRITES = load_sprite_sheets("MainCharacters", "PinkMan", 32, 32, True)
     ANIMATION_DELAY = 5
     
     # Aqui a altura e largura serão determinadas pela imagem q estamos usando para o nosso personagem
@@ -222,23 +222,29 @@ class Block(Object):
         self.mask = pygame.mask.from_surface(self.image) #criando a máscara de colisão para ser ocultado da superfíce
 
 class Flag(Object):
-    ANIMATION_DELAY = 26
+    ANIMATION_DELAY = 4
 
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height,):
         super().__init__(x, y, width, height, "flag")
         self.flag = load_sprite_sheets("Items", "Checkpoints", width, height)
         self.image = self.flag["Checkpoint (No Flag)"][0]
-        self.mask = pygame.mask.from_surface(self.image)
         self.animation_count = 0
         self.animation_name = "Checkpoint (No Flag)"
+        self.hit = False
 
-    def hitflag(self):
-        self.animation_name = "Checkpoint (Flag Out) (64x64)"
+    def hit_flag(self):
+        self.hit = True
 
-    def noflag(self):
-        self.animation_name = "Checkpoint (No Flag)"
+    def flag_idle(self):
+        self.animation_name = "Checkpoint (Flag Idle)(64x64)"
+        
 
-    def loop(self):
+    def loop(self): 
+        if self.hit:
+            self.image = self.flag["Checkpoint (Flag Out) (64x64)"][0]
+        elif self.animation_count == 25:
+            self.animation_name = "Checkpoint (Flag Idle)(64x64)"
+        
         sprites = self.flag[self.animation_name]
         sprite_index = (self.animation_count //
                         self.ANIMATION_DELAY) % len(sprites)
@@ -246,7 +252,6 @@ class Flag(Object):
         self.animation_count += 1
 
         self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
-        self.mask = pygame.mask.from_surface(self.image)
 
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
             self.animation_count = 0
@@ -318,6 +323,9 @@ def draw(window, background, bg_image, player, objects, offset_x, coletavel):
     pygame.display.update() # Atualizando a tela a cada frame
 
 
+
+
+
 def handle_vertical_collision(player, objects, dy):
     collided_objects = []
     for obj in objects:
@@ -333,6 +341,8 @@ def handle_vertical_collision(player, objects, dy):
             collided_objects.append(obj)
 
     return collided_objects
+
+
 
 
 def collide(player, objects, dx):
@@ -372,7 +382,7 @@ def handle_move(player, objects):
 
 def main(window):
     clock = pygame.time.Clock()
-    background, bg_image = get_background("Blue.png") # bg_image é a imagem de fundo 
+    background, bg_image = get_background("Pink.png") # bg_image é a imagem de fundo 
 
     block_size = 96
 
