@@ -328,6 +328,7 @@ def draw(window, background, bg_image, player, objects, offset_x, coletavel):
     pygame.display.update() # Atualizando a tela a cada frame
 
 
+#criando uma nova colisão para os coletáveis 
 
 
 
