@@ -6,13 +6,15 @@ from os import listdir
 from os.path import isfile, join
 pygame.init()
 pygame.display.set_caption("Platformer")
+pygame.mixer.init()
 
 WIDTH, HEIGHT = 1000, 800
 FPS = 60
 PLAYER_VEL = 5
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
-
+music = pygame.mixer.music.load("metallica-fight-fire-with-fire-doom.wav")
+pygame.mixer.music.play(-1)
 
 def flip(sprites):
     # Função que inverte as imagens horizontalmente
@@ -92,6 +94,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.hit = False
         self.hit_count = 0
         self.health = 3
+        self.alive = True # alive definindo se o boneco esta vivo ou morto
         
     def jump(self):
         self.y_vel = -self.GRAVITY * 7 #a gravidade vai negativa para que ele pule no ar, ou seja fique mais "leve" e vá para cima
@@ -126,11 +129,16 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
 
         if self.hit:
             self.hit_count += 1
-        if self.hit_count > fps * 1.2:
+        if self.hit_count > fps * 1:
             self.health -= 1 # decrescendo a quantidade de coração assim que o contador de dano parar
             self.hit = False
-            self.hit_count = 0
-        elif self.fall_count
+            self.hit_count = 0  
+        elif self.fall_count > 100:
+            self.health -=1
+        
+        if self.health < 0:
+                self.alive = False# mata o boneco quando a vida estiver 0
+
             
             
         self.fall_count += 1
@@ -301,8 +309,11 @@ def draw(window, background, bg_image, player, objects, offset_x, coletavel):
     
     for colect in coletavel:
         colect.draw(window, offset_x)
-
+    
     player.draw(window, offset_x)
+
+    if player.alive == False:# preenchendo a tela com preto quando o boneco tiver vida menor que 0
+        window.fill((0,0,0))
 
     pygame.display.update() # Atualizando a tela a cada frame
 
