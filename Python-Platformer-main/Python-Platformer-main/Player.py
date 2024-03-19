@@ -121,9 +121,6 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
 
         path = join("assets", "Items", 'Heart', "full_heart.png")
         full_heart = pygame.image.load(path).convert_alpha()
-
-        for heart in range(self.health):
-            window.blit(full_heart,(heart *50,45)) #adicionando os coracoes com base na quantidade de coracao do personagem no canto superior esquerdo
     
     # Desenha o player na tela
     def draw(self, win, offset_x):
@@ -133,4 +130,4 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         full_heart = pygame.image.load(path).convert_alpha()
 
         for heart in range(self.health):
-            window.blit(full_heart,(heart *50,45))#adicionando os coracoes com base na quantidade de coracao do personagem no canto superior esquerdo
+            window.blit(full_heart,(heart *50,25))#adicionando os coracoes com base na quantidade de coracao do personagem no canto superior esquerdo
