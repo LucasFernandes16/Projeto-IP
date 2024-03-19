@@ -21,7 +21,7 @@ def get_background(name):
     return tiles, image
 
 # Desenhando o fundo
-def draw(window, background, bg_image, player, objects, offset_x, coletavel):
+def draw(window, background, bg_image, player, objects, offset_x, collectible):
     # Percorrendo cada bloco para poder desenhar sobre ele
     for tile in background:
         # window.blit é usado para atualizar o conteúdo da janela do jogo a cada quadro
@@ -30,7 +30,7 @@ def draw(window, background, bg_image, player, objects, offset_x, coletavel):
     for obj in objects:
         obj.draw(window, offset_x)
     
-    for colect in coletavel:
+    for colect in collectible:
         colect.draw(window, offset_x)
     
     player.draw(window, offset_x)

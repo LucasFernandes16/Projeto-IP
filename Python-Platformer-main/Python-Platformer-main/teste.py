@@ -9,6 +9,7 @@ from Background import *
 from Sprites import *
 from Player import Player
 from Collision import *
+from Colisao import *
 
 pygame.init()
 pygame.display.set_caption("Platformer")
@@ -40,7 +41,7 @@ def main(window):
                fire,fire1,
                Block(block_size * 6,HEIGHT - block_size * 5,block_size),Block(block_size * 7,HEIGHT - block_size * 5,block_size),Block(block_size * 8,HEIGHT - block_size * 5,block_size),Block(block_size * 9,HEIGHT - block_size * 5,block_size)
                ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)]
-    coletavel = [flag]
+    collectible= [flag]
     
     offset_x = 0
     scroll_area_width = 200
@@ -63,7 +64,8 @@ def main(window):
         fire.loop()
         fire1.loop()
         handle_move(player, objects)
-        draw(window, background, bg_image, player, objects, offset_x, coletavel) #chamando a def do fundo 
+        collectible_handle_move(player, collectible)
+        draw(window, background, bg_image, player, objects, offset_x, collectible) #chamando a def do fundo 
 
         if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                 (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
