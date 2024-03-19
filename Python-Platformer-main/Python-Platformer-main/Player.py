@@ -117,16 +117,13 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y)) # Atualiza a posição do retângulo do sprite
         self.mask = pygame.mask.from_surface(self.sprite) # Atualiza a colisão do sprite
     
-    def full_hearts(self):# criando a classe full_heart
 
-        path = join("assets", "Items", 'Heart', "full_heart.png")
-        full_heart = pygame.image.load(path).convert_alpha()
-    
     # Desenha o player na tela
     def draw(self, win, offset_x):
         win.blit(self.sprite, (self.rect.x - offset_x, self.rect.y))
         
-        path = join("assets", "Items", 'Heart', "full_heart.png")#carregando a sprite do coracao
+        #carregando a sprite do coracao
+        path = join("assets", "Items", 'Heart', "full_heart.png")
         full_heart = pygame.image.load(path).convert_alpha()
 
         for heart in range(self.health):

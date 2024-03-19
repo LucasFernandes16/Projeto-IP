@@ -34,8 +34,10 @@ def load_sprite_sheets(dir1, dir2, width, height, direction=False):
             rect = pygame.Rect(i * width, 0, width, height)
             surface.blit(sprite_sheet, (0, 0), rect) # Copia o sprite da sprite sheet para a superfície
             # Escala o sprite para o dobro do tamanho
-            sprites.append(pygame.transform.scale2x(surface)) 
-        
+            if width < 96 and height < 96: 
+                sprites.append(pygame.transform.scale2x(surface)) 
+            else:
+                sprites.append(surface)
         # Verifica se a direção está ativada
         if direction:
             # Adiciona os sprites invertidos para a direita e para a esquerda
