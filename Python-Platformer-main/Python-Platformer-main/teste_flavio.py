@@ -6,13 +6,15 @@ from os import listdir
 from os.path import isfile, join
 pygame.init()
 pygame.display.set_caption("Platformer")
+pygame.mixer.init()
 
 WIDTH, HEIGHT = 1000, 800
 FPS = 60
 PLAYER_VEL = 5
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
-
+music = pygame.mixer.music.load("metallica-fight-fire-with-fire-doom.wav")
+pygame.mixer.music.play(-1)
 
 def flip(sprites):
     # Função que inverte as imagens horizontalmente
@@ -65,7 +67,7 @@ def get_block(size):
     surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)
 
     # Para carregar a imagem desejada iniciamos a contar de 96 pixels de distância do eixo x e teremos o bloco verde
-    rect = pygame.Rect(96, 0, size, size) 
+    rect = pygame.Rect(96, 128, size, size) 
     # Isso significa q cada bloco quadrado vísivel possui 8 pixels, 96/8 = 12 quadrados de distância em x
 
     surface.blit(image, (0, 0), rect)
@@ -75,7 +77,7 @@ def get_block(size):
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
     COLOR = (255, 0, 0)
     GRAVITY = 1
-    SPRITES = load_sprite_sheets("MainCharacters", "NinjaFrog", 32, 32, True)
+    SPRITES = load_sprite_sheets("MainCharacters", "PinkMan", 32, 32, True)
     ANIMATION_DELAY = 5
     
     # Aqui a altura e largura serão determinadas pela imagem q estamos usando para o nosso personagem
@@ -92,6 +94,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.hit = False
         self.hit_count = 0
         self.health = 3
+        self.alive = True # alive definindo se o boneco esta vivo ou morto
         
     def jump(self):
         self.y_vel = -self.GRAVITY * 7 #a gravidade vai negativa para que ele pule no ar, ou seja fique mais "leve" e vá para cima
@@ -126,11 +129,18 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
 
         if self.hit:
             self.hit_count += 1
-        if self.hit_count > fps * 1.2:
+        if self.hit_count > fps * 1:
             self.health -= 1 # decrescendo a quantidade de coração assim que o contador de dano parar
             self.hit = False
-            self.hit_count = 0
+            self.hit_count = 0  
+        elif self.fall_count > 100:
+            self.health -=1
+        
+        if self.health < 0:
+                self.alive = False# mata o boneco quando a vida estiver 0
 
+            
+            
         self.fall_count += 1
         self.update_sprite()
 
@@ -212,23 +222,29 @@ class Block(Object):
         self.mask = pygame.mask.from_surface(self.image) #criando a máscara de colisão para ser ocultado da superfíce
 
 class Flag(Object):
-    ANIMATION_DELAY = 26
+    ANIMATION_DELAY = 4
 
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height,):
         super().__init__(x, y, width, height, "flag")
         self.flag = load_sprite_sheets("Items", "Checkpoints", width, height)
         self.image = self.flag["Checkpoint (No Flag)"][0]
-        self.mask = pygame.mask.from_surface(self.image)
         self.animation_count = 0
         self.animation_name = "Checkpoint (No Flag)"
+        self.hit = False
 
-    def hitflag(self):
-        self.animation_name = "Checkpoint (Flag Out) (64x64)"
+    def hit_flag(self):
+        self.hit = True
 
-    def noflag(self):
-        self.animation_name = "Checkpoint (No Flag)"
+    def flag_idle(self):
+        self.animation_name = "Checkpoint (Flag Idle)(64x64)"
+        
 
-    def loop(self):
+    def loop(self): 
+        if self.hit:
+            self.image = self.flag["Checkpoint (Flag Out) (64x64)"][0]
+        elif self.animation_count == 25:
+            self.animation_name = "Checkpoint (Flag Idle)(64x64)"
+        
         sprites = self.flag[self.animation_name]
         sprite_index = (self.animation_count //
                         self.ANIMATION_DELAY) % len(sprites)
@@ -236,7 +252,6 @@ class Flag(Object):
         self.animation_count += 1
 
         self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
-        self.mask = pygame.mask.from_surface(self.image)
 
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
             self.animation_count = 0
@@ -299,10 +314,22 @@ def draw(window, background, bg_image, player, objects, offset_x, coletavel):
     
     for colect in coletavel:
         colect.draw(window, offset_x)
-
+    
     player.draw(window, offset_x)
 
+    if player.alive == False:# preenchendo a tela com preto quando o boneco tiver vida menor que 0
+        window.fill((0,0,0))
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render('Game Over', True, (255,192,203))
+        textRect = text.get_rect()
+        textRect.center = (HEIGHT // 1.6 , HEIGHT // 2)
+        window.blit(text, textRect)#escrevendo na tela a mensagem Game Over
+
     pygame.display.update() # Atualizando a tela a cada frame
+
+
+#criando uma nova colisão para os coletáveis 
+
 
 
 def handle_vertical_collision(player, objects, dy):
@@ -320,6 +347,8 @@ def handle_vertical_collision(player, objects, dy):
             collided_objects.append(obj)
 
     return collided_objects
+
+
 
 
 def collide(player, objects, dx):
@@ -359,7 +388,7 @@ def handle_move(player, objects):
 
 def main(window):
     clock = pygame.time.Clock()
-    background, bg_image = get_background("Blue.png") # bg_image é a imagem de fundo 
+    background, bg_image = get_background("Pink.png") # bg_image é a imagem de fundo 
 
     block_size = 96
 
