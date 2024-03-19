@@ -1,3 +1,9 @@
+import pygame
+import os
+from os import listdir
+from os.path import isfile, join
+
+
 def flip(sprites):
     # Função que inverte as imagens horizontalmente
     return [pygame.transform.flip(sprite, True, False) for sprite in sprites]

@@ -2,6 +2,7 @@ import os
 import random
 import math
 import pygame
+import Player
 from os import listdir
 from os.path import isfile, join
 pygame.init()
@@ -13,6 +14,7 @@ FPS = 60
 PLAYER_VEL = 5
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
+
 
 # Criando o fundo do jogo
 def get_background(name):

@@ -4,6 +4,7 @@ import math
 import pygame
 from os import listdir
 from os.path import isfile, join
+from Objects import *
 pygame.init()
 pygame.display.set_caption("Platformer")
 pygame.mixer.init()
@@ -58,20 +59,6 @@ def load_sprite_sheets(dir1, dir2, width, height, direction=False):
             all_sprites[image.replace(".png", "")] = sprites
 
     return all_sprites
-
-def get_block(size):
-    path = join("assets", "Terrain", "Terrain.png") # Acessa a pasta q contém a imagem do bloco
-    image = pygame.image.load(path).convert_alpha()
-
-    # Criando a imagem com tamanho do bloco q nós queremos usar
-    surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)
-
-    # Para carregar a imagem desejada iniciamos a contar de 96 pixels de distância do eixo x e teremos o bloco verde
-    rect = pygame.Rect(96, 128, size, size) 
-    # Isso significa q cada bloco quadrado vísivel possui 8 pixels, 96/8 = 12 quadrados de distância em x
-
-    surface.blit(image, (0, 0), rect)
-    return pygame.transform.scale2x(surface)
 
 # Criando o personagem
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
@@ -200,26 +187,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
 
         for heart in range(self.health):
             window.blit(full_heart,(heart *50,45))#adicionando os coracoes com base na quantidade de coracao do personagem no canto superior esquerdo
-# Apenas definindo a classe de objetos para usar herença nos outros objetos q iremos criar no jogo
-class Object(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, name=None):
-        super().__init__()
-        self.rect = pygame.Rect(x, y, width, height)
-        self.image = pygame.Surface((width, height), pygame.SRCALPHA)
-        self.width = width
-        self.height = height
-        self.name = name
 
-    def draw(self, win, offset_x):
-        win.blit(self.image, (self.rect.x - offset_x, self.rect.y))
-
-# Criando os blocos
-class Block(Object):
-    def __init__(self, x, y, size):
-        super().__init__(x, y, size, size) # Repetimos size pq oq queremos é um quadrado
-        block = get_block(size)
-        self.image.blit(block, (0, 0))
-        self.mask = pygame.mask.from_surface(self.image) #criando a máscara de colisão para ser ocultado da superfíce
 
 class Flag(Object):
     ANIMATION_DELAY = 4
@@ -258,35 +226,7 @@ class Flag(Object):
 
 
 
-class Fire(Object):
-    ANIMATION_DELAY = 3
 
-    def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height, "fire")
-        self.fire = load_sprite_sheets("Traps", "Fire", width, height)
-        self.image = self.fire["off"][0]
-        self.mask = pygame.mask.from_surface(self.image)
-        self.animation_count = 0
-        self.animation_name = "off"
-
-    def on(self):
-        self.animation_name = "on"
-
-    def off(self):
-        self.animation_name = "off"
-
-    def loop(self):
-        sprites = self.fire[self.animation_name]
-        sprite_index = (self.animation_count //
-                        self.ANIMATION_DELAY) % len(sprites)
-        self.image = sprites[sprite_index]
-        self.animation_count += 1
-
-        self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
-        self.mask = pygame.mask.from_surface(self.image)
-
-        if self.animation_count // self.ANIMATION_DELAY > len(sprites):
-            self.animation_count = 0
 
 # Criando o fundo do jogo
 def get_background(name):
