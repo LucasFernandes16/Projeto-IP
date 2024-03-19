@@ -14,7 +14,7 @@ pygame.init()
 pygame.display.set_caption("Platformer")
 pygame.mixer.init()
 
-music = pygame.mixer.music.load("metallica-fight-fire-with-fire-doom.wav")
+music = pygame.mixer.music.load("metallica_fight_fire_with_fire.wav")
 pygame.mixer.music.play(-1)
 
 def main(window):
