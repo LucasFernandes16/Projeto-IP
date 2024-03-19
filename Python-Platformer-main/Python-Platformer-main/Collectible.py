@@ -34,44 +34,6 @@ class Collectible(Object):
 fruit = (230, HEIGHT - block_size - 64 , 32, 32, "Melon")
 
 
-class Flag(Object):
-    ANIMATION_DELAY = 4
-
-    def __init__(self, x, y, width, height,):
-        super().__init__(x, y, width, height, "flag")
-        self.flag = load_sprite_sheets("Items", "Checkpoints", width, height)
-        self.image = self.flag["Checkpoint (No Flag)"][0]
-        self.animation_count = 0
-        self.animation_name = "Checkpoint (No Flag)"
-        self.hit = False
-
-    def hit_flag(self):
-        self.hit = True
-
-    def flag_idle(self):
-        self.animation_name = "Checkpoint (Flag Idle)(64x64)"
-        
-
-    def loop(self): 
-        if self.hit:
-            self.image = self.flag["Checkpoint (Flag Out) (64x64)"][0]
-        elif self.animation_count == 25:
-            self.animation_name = "Checkpoint (Flag Idle)(64x64)"
-        
-        sprites = self.flag[self.animation_name]
-        sprite_index = (self.animation_count //
-                        self.ANIMATION_DELAY) % len(sprites)
-        self.image = sprites[sprite_index]
-        self.animation_count += 1
-
-        self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
-
-        if self.animation_count // self.ANIMATION_DELAY > len(sprites):
-            self.animation_count = 0
-
-
-path = pygame.image.load("assets/MainCharacters/NinjaFrog")
-
 def update_sprite(self):
         sprite_sheet = "idle"
         if self.hit:

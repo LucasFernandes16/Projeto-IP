@@ -4,6 +4,8 @@ from os import listdir
 from os.path import isfile, join
 from Sprites import flip, load_sprite_sheets
 
+WIDTH, HEIGHT = 1000, 800
+window = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # Criando o personagem
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
