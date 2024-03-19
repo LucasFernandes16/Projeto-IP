@@ -19,7 +19,7 @@ pygame.mixer.music.play(-1)
 
 def main(window):
     clock = pygame.time.Clock()
-    background, bg_image = get_background("Pink.png") # bg_image é a imagem de fundo 
+    background, bg_image = get_background("Purple.png") # bg_image é a imagem de fundo 
 
     block_size = 96
 
