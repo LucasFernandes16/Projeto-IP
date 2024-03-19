@@ -14,7 +14,6 @@ class Object(pygame.sprite.Sprite):
     def draw(self, win, offset_x):
         win.blit(self.image, (self.rect.x - offset_x, self.rect.y))
 
-
 class Collectible(Object):
     ANIMATION_DELAY = 3
     
@@ -49,7 +48,3 @@ class Collectible(Object):
             self.animation_count = 0
 
 fruit = (230, HEIGHT - block_size - 64 , 32, 32, "Melon")
-
-
-
-
