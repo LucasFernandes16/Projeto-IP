@@ -9,7 +9,6 @@ from Background import *
 from Sprites import *
 from Player import Player
 from Collision import *
-from Colisao import *
 
 pygame.init()
 pygame.display.set_caption("Platformer")
