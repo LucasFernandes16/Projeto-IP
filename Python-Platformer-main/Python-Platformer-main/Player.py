@@ -1,42 +1,17 @@
-def flip(sprites):
-    # Função que inverte as imagens horizontalmente
-    return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
+import pygame
+import os
+from os import listdir
+from os.path import isfile, join
+from Sprites import flip, load_sprite_sheets
 
-
-def load_sprite_sheets(dir1, dir2, width, height, direction=False):
-    # dir1 é a pasta onde as sprites estão guardadas 
-    # dir2 é a sprite q vc quer usar
-    
-    # Função para carregar spritesheets e criar sprites a partir delas
-    path = join("assets", dir1, dir2)
-    images = [f for f in listdir(path) if isfile(join(path, f))]
-
-    all_sprites = {}
-
-    for image in images:
-        sprite_sheet = pygame.image.load(join(path, image)).convert_alpha()
-
-        sprites = []
-        for i in range(sprite_sheet.get_width() // width):
-            surface = pygame.Surface((width, height), pygame.SRCALPHA, 32)
-            rect = pygame.Rect(i * width, 0, width, height)
-            surface.blit(sprite_sheet, (0, 0), rect)
-            sprites.append(pygame.transform.scale2x(surface))
-
-        if direction:
-            all_sprites[image.replace(".png", "") + "_right"] = sprites
-            all_sprites[image.replace(".png", "") + "_left"] = flip(sprites)
-        else:
-            all_sprites[image.replace(".png", "")] = sprites
-
-    return all_sprites
-
+WIDTH, HEIGHT = 1000, 800
+window = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # Criando o personagem
 class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar a colisão entre os pixels do jogador com os blocos
     COLOR = (255, 0, 0)
     GRAVITY = 1
-    SPRITES = load_sprite_sheets("MainCharacters", "NinjaFrog", 32, 32, True)
+    SPRITES = load_sprite_sheets("MainCharacters", "PinkMan", 32, 32, True)
     ANIMATION_DELAY = 5
     
     # Aqui a altura e largura serão determinadas pela imagem q estamos usando para o nosso personagem
@@ -53,7 +28,8 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.hit = False
         self.hit_count = 0
         self.health = 3
-
+        self.alive = True # alive definindo se o boneco esta vivo ou morto
+        
     def jump(self):
         self.y_vel = -self.GRAVITY * 7 #a gravidade vai negativa para que ele pule no ar, ou seja fique mais "leve" e vá para cima
         self.animation_count = 0
@@ -87,10 +63,18 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
 
         if self.hit:
             self.hit_count += 1
-        if self.hit_count > fps * 2:
+        if self.hit_count > fps * 1:
+            self.health -= 1 # decrescendo a quantidade de coração assim que o contador de dano parar
             self.hit = False
-            self.hit_count = 0
+            self.hit_count = 0  
+        elif self.fall_count > 100:
+            self.health -=1
+        
+        if self.health < 0:
+                self.alive = False# mata o boneco quando a vida estiver 0
 
+            
+            
         self.fall_count += 1
         self.update_sprite()
 
@@ -133,6 +117,17 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y)) # Atualiza a posição do retângulo do sprite
         self.mask = pygame.mask.from_surface(self.sprite) # Atualiza a colisão do sprite
     
+    def full_hearts(self):# criando a classe full_heart
+
+        path = join("assets", "Items", 'Heart', "full_heart.png")
+        full_heart = pygame.image.load(path).convert_alpha()
+    
     # Desenha o player na tela
     def draw(self, win, offset_x):
         win.blit(self.sprite, (self.rect.x - offset_x, self.rect.y))
+        
+        path = join("assets", "Items", 'Heart', "full_heart.png")#carregando a sprite do coracao
+        full_heart = pygame.image.load(path).convert_alpha()
+
+        for heart in range(self.health):
+            window.blit(full_heart,(heart *50,25))#adicionando os coracoes com base na quantidade de coracao do personagem no canto superior esquerdo
