@@ -10,6 +10,7 @@ from Sprites import *
 from Player import Player
 from Collision import *
 
+
 pygame.init()
 pygame.display.set_caption("Platformer")
 pygame.mixer.init()
@@ -57,7 +58,9 @@ def main(window):
             if event.type == pygame.KEYDOWN: #checando se tem uma tecla pressionada
                 if event.key == pygame.K_SPACE and player.jump_count < 2: #se a tecla for espaço e o contador dos nossos pulos for menor que dois, vai poder pular duas vezes
                     player.jump()
+                
 
+        
         flag.loop()
         player.loop(FPS)
         fire.loop()

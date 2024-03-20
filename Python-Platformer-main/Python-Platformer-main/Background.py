@@ -2,11 +2,13 @@ import os
 import pygame
 from os import listdir
 from os.path import isfile, join
+pygame.init()
 
 FPS = 60
 WIDTH, HEIGHT = 1000, 800
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 # Criando o fundo do jogo
+
 def get_background(name):
     image = pygame.image.load(join("assets", "Background", name)) # Acessando a pasta que contém a imagem que usaremos de fundo
     _, _, width, height = image.get_rect()
@@ -34,13 +36,9 @@ def draw(window, background, bg_image, player, objects, offset_x, collectible):
         colect.draw(window, offset_x)
     
     player.draw(window, offset_x)
-
-    if player.alive == False:# preenchendo a tela com preto quando o boneco tiver vida menor que 0
-        window.fill((0,0,0))
-        font = pygame.font.Font('freesansbold.ttf', 32)
-        text = font.render('Game Over', True, (255,192,203))
-        textRect = text.get_rect()
-        textRect.center = (HEIGHT // 1.6 , HEIGHT // 2)
-        window.blit(text, textRect)#escrevendo na tela a mensagem Game Over
+    if player.alive == False:
+        fundo=pygame.image.load('GAME OVER.png')
+        window.blit(fundo, (0,0))
+        pygame.display.update()
 
     pygame.display.update() # Atualizando a tela a cada frame

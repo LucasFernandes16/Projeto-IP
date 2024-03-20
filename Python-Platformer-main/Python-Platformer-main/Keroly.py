@@ -37,3 +37,4 @@ while True:
             pygame.display.flip()
 
     exibir_instrucoes()
+    # fyfyhfyu
