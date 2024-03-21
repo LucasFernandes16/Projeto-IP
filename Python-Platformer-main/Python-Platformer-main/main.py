@@ -10,7 +10,7 @@ from Collision import *
 from Initialization import *
 
 pygame.init()
-pygame.display.set_caption("Platformer")
+pygame.display.set_caption("Purple Rain")
 pygame.mixer.init()
 
 controle= 0
