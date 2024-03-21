@@ -72,8 +72,6 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         
         if self.health < 0:
                 self.alive = False# mata o boneco quando a vida estiver 0
-
-            
             
         self.fall_count += 1
         self.update_sprite()

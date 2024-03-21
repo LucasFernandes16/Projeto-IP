@@ -37,7 +37,7 @@ def draw(window, background, bg_image, player, objects, offset_x, collectible):
     
     player.draw(window, offset_x)
     if player.alive == False:
-        fundo=pygame.image.load('GAME OVER.png')
+        fundo=pygame.image.load(join("assets", "Screens", 'GAME OVER.png'))
         window.blit(fundo, (0,0))
         pygame.display.update()
 

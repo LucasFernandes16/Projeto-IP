@@ -1,6 +1,4 @@
 import os
-import random
-import math
 import pygame
 from os import listdir
 from os.path import isfile, join
@@ -9,7 +7,7 @@ from Background import *
 from Sprites import *
 from Player import Player
 from Collision import *
-from inicializacao import *
+from Initialization import *
 
 pygame.init()
 pygame.display.set_caption("Platformer")
@@ -34,17 +32,18 @@ def main(window):
     fire1.on()
 
     flag = Flag(1155, HEIGHT - block_size*6 - 128 , 64, 64)
-    fruit = Collectible(230, HEIGHT - block_size - 64 , 32, 32, "Melon")
+    
+    heart = Collectible(230, HEIGHT - block_size - 64 , 32, 32, "Melon")
     
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
 
     objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),  
                Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), 
-               fire,fire1,
+               fire,fire1,heart,
                Block(block_size * 6,HEIGHT - block_size * 5,block_size),Block(block_size * 7,HEIGHT - block_size * 5,block_size),Block(block_size * 8,HEIGHT - block_size * 5,block_size),Block(block_size * 9,HEIGHT - block_size * 5,block_size)
                ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)]
-    collectible= [flag, fruit]
+    collectible= [flag]
     
     offset_x = 0
     scroll_area_width = 200
