@@ -53,4 +53,7 @@ def handle_move(player, objects):
             player.make_hit()
         if obj and obj.name == "spike":
             player.make_hit()
+        if obj and obj.name == "heart":
+            if obj.heal():
+                player.health = min(player.health + 1, 3)
         

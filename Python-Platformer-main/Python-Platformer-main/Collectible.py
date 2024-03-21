@@ -47,4 +47,12 @@ class Collectible(Object):
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
             self.animation_count = 0
 
-# fruit = (230, HEIGHT - block_size - 64 , 32, 32, "Melon")
+class Heart(Collectible):
+    def _init_(self, x, y, width, height):
+        super()._init_(x, y, width, height, f"heart")
+        self.collected = False
+    def heal(self):
+        if not self.collected:
+            self.collected = True
+            return True
+        return False

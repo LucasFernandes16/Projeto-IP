@@ -29,8 +29,6 @@ def main(window):
     
     fire = Fire(750, HEIGHT - block_size*5 - 64, 16, 32)
     fire.on()
-    fire_1 = Fire(180, HEIGHT - block_size - 64 , 16, 32)
-    fire_1.on()
     
     spikes = Spikes(700, HEIGHT  - block_size*5 - 32 , 16, 16)
 
@@ -38,17 +36,17 @@ def main(window):
 
     flag = Flag(1155, HEIGHT - block_size*6 - 128 , 64, 64)
     
-    # heart = Collectible(230, HEIGHT - block_size - 64 , 32, 32, "Melon")
+    # heart = Heart(1000, HEIGHT - block_size*4 - 32 , 16, 16)
     
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
 
     objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),  
                Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), 
-               fire,fire_1, spikes,
+               fire,
                Block(block_size * 6,HEIGHT - block_size * 5,block_size),Block(block_size * 7,HEIGHT - block_size * 5,block_size),Block(block_size * 8,HEIGHT - block_size * 5,block_size),Block(block_size * 9,HEIGHT - block_size * 5,block_size)
                ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)
-               ,Spikes(700, HEIGHT  - block_size*5 - 32 , 16, 16), Spikes(702, HEIGHT  - block_size*5 - 32 , 16, 16), Spikes(670, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(638, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(608, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(576, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(668, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(668, HEIGHT  - block_size*5 - 32 , 16, 16)]
+               , Spikes(704, HEIGHT  - block_size*5 - 32 , 16, 16), Spikes(672, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(640, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(608, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(576, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(780, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(812, HEIGHT  - block_size*5 - 32 , 16, 16), Spikes(844, HEIGHT  - block_size*5 - 32 , 16, 16), Spikes(876, HEIGHT  - block_size*5 - 32 , 16, 16), Spikes(912, HEIGHT  - block_size*5 - 32 , 16, 16), Spikes(928, HEIGHT  - block_size*5 - 32 , 16, 16),]
     collectible= [flag]
     
     offset_x = 0
@@ -91,10 +89,10 @@ def main(window):
         if controle == 0:
             init_tela()
         else:
+
             flag.loop()
             player.loop(FPS)
             fire.loop()
-            fire_1.loop()
             handle_move(player, objects)
             #collectible_handle_move(player, collectible)
             draw(window, background, bg_image, player, objects, offset_x, collectible) #chamando a def do fundo 
