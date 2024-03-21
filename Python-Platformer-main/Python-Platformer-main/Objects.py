@@ -4,7 +4,7 @@ from os import listdir
 from os.path import isfile, join
 from Traps import Fire
 from Flag import Flag
-
+from Collectible import Collectible
 
 def get_block(size):
     path = join("assets", "Terrain", "Terrain.png") # Acessa a pasta q contém a imagem do bloco

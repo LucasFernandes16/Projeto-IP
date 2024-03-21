@@ -47,4 +47,4 @@ class Collectible(Object):
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
             self.animation_count = 0
 
-fruit = (230, HEIGHT - block_size - 64 , 32, 32, "Melon")
+# fruit = (230, HEIGHT - block_size - 64 , 32, 32, "Melon")
