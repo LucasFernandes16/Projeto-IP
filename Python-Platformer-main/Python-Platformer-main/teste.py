@@ -10,11 +10,11 @@ from Collision import *
 from Initialization import *
 
 pygame.init()
-pygame.display.set_caption("Platformer")
+pygame.display.set_caption("Purple Rain")
 pygame.mixer.init()
 
 controle= 0
-music = pygame.mixer.music.load("metallica_fight_fire_with_fire.wav")
+music = pygame.mixer.music.load(join("assets", "Music","metallica_fight_fire_with_fire.wav"))
 pygame.mixer.music.play(-1)
 
 def main(window):
@@ -33,7 +33,7 @@ def main(window):
 
     flag = Flag(1155, HEIGHT - block_size*6 - 128 , 64, 64)
     
-    heart = Collectible(230, HEIGHT - block_size - 64 , 32, 32, "Melon")
+    heart = Collectible(230, HEIGHT - block_size - 32 , 16, 16, "heart 16x16")
     
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]

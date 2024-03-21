@@ -23,7 +23,7 @@ class Flag(Object):
         self.flag = load_sprite_sheets("Items", "Checkpoints", width, height)
         self.image = self.flag["Checkpoint (No Flag)"][0]
         self.animation_count = 0
-        self.animation_name = "Checkpoint (No Flag)"
+        self.animation_name = "Checkpoint (Flag Idle)(64x64)"
         self.hit = False
 
     def hit_flag(self):
