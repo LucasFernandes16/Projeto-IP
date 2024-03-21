@@ -20,7 +20,7 @@ class Player(pygame.sprite.Sprite): # Usando herança de Sprite's para facilitar
         self.rect = pygame.Rect(x, y, width, height) # Adicionado todos esses valores em retângulo fica mais fácil de acessar e resolver os problemas das colisões
         self.x_vel = 0
         self.y_vel = 0
-        self.mask = None #Armazena a máscara de colisão correspondente à imagem do objeto, que é usada para detecção de colisão mais precisa
+        self.mask = pygame.mask.from_surface(self.SPRITES["idle_right"][0]) #Armazena a máscara de colisão correspondente à imagem do objeto, que é usada para detecção de colisão mais precisa
         self.direction = "left"
         self.animation_count = 0 # sem isso vc redefine a animação em quanto o palyer está se movendo e vai bugar a tela
         self.fall_count = 0

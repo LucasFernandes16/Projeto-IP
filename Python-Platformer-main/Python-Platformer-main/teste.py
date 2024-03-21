@@ -1,4 +1,5 @@
 import os
+import time
 import pygame
 from os import listdir
 from os.path import isfile, join
@@ -16,7 +17,7 @@ pygame.mixer.init()
 controle= 0
 music = pygame.mixer.music.load(join("assets", "Music","metallica_fight_fire_with_fire.wav"))
 pygame.mixer.music.play(-1)
-
+a = True
 def main(window):
     global controle
     clock = pygame.time.Clock()
@@ -54,13 +55,25 @@ def main(window):
     scroll_area_width = 200
 
     run = True
+    global a
     while run:
+        a = True
         clock.tick(FPS)
+        if pygame.sprite.collide_mask(player, flag):
+            fundo=pygame.image.load(join("assets", "Screens", 'final_img.png'))
+            window.blit(fundo, (0,0))
+            pygame.display.update()
+            a = False
+            time.sleep(1)
+            #run = False
+        
+            
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 break
+           
 
             if event.type == pygame.KEYDOWN: #checando se tem uma tecla pressionada
                 if event.key == pygame.K_SPACE and player.jump_count < 2: #se a tecla for espaço e o contador dos nossos pulos for menor que dois, vai poder pular duas vezes
@@ -70,6 +83,11 @@ def main(window):
                 if event.key == pygame.K_RETURN:
                     controle+=1
                     main(window)
+                if event.key == pygame.K_RETURN and a == False and controle > 0:
+                    main(window)
+                
+                
+        
         if controle == 0:
             init_tela()
         else:
