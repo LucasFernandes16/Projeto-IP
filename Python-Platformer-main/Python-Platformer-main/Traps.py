@@ -46,3 +46,28 @@ class Fire(Object):
         #evitando que a contagem de animações não fique muito grande já que o fogo é estatico
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
             self.animation_count = 0 #se for além da animação volta para a contagem = 0
+
+class Spikes(Object):
+    ANIMATION_DELAY = 3
+
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height, "spike") # passando o nome 'fire' para o objeto
+        self.fire = load_sprite_sheets("Traps", "Spikes", width, height) #carregando as sprites das armadilhas de disparo automátioo 
+        self.image = self.fire["Idle"][0] #inicializando a imagem do fogo apagado'off'
+        self.mask = pygame.mask.from_surface(self.image)
+        self.animation_count = 0 
+        self.animation_name = "Idle" 
+
+    def loop(self):
+        sprites = self.fire[self.animation_name]# utilizando self.fire para obter as animações de fogo aceso e apagado
+        sprite_index = (self.animation_count //
+                        self.ANIMATION_DELAY) % len(sprites)
+        self.image = sprites[sprite_index] #define o sprite atual do fogo
+        self.animation_count += 1 #acrescenta o contador da animação do fogo
+
+        self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
+        self.mask = pygame.mask.from_surface(self.image) #mascara de colisao para o fogo
+
+        #evitando que a contagem de animações não fique muito grande já que o fogo é estatico
+        if self.animation_count // self.ANIMATION_DELAY > len(sprites):
+            self.animation_count = 0 #se for além da animação volta para a contagem = 0

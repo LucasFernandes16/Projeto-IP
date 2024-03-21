@@ -1,8 +1,6 @@
 import pygame
 from Player import *
 
-
-
 PLAYER_VEL = 5
 
 def handle_vertical_collision(player, objects, dy):
@@ -52,6 +50,7 @@ def handle_move(player, objects):
 
     for obj in to_check:
         if obj and obj.name == "fire":
-            to_check = []
-            to_check = [*vertical_collide]
             player.make_hit()
+        if obj and obj.name == "spike":
+            player.make_hit()
+        

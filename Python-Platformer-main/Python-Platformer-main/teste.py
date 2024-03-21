@@ -10,7 +10,7 @@ from Collision import *
 from Initialization import *
 
 pygame.init()
-pygame.display.set_caption("Purple Rain")
+pygame.display.set_caption("Platformer")
 pygame.mixer.init()
 
 controle= 0
@@ -28,21 +28,26 @@ def main(window):
     
     fire = Fire(750, HEIGHT - block_size*5 - 64, 16, 32)
     fire.on()
-    fire1 = Fire(180, HEIGHT - block_size - 64 , 16, 32)
-    fire1.on()
+    fire_1 = Fire(180, HEIGHT - block_size - 64 , 16, 32)
+    fire_1.on()
+    
+    spikes = Spikes(700, HEIGHT  - block_size*5 - 32 , 16, 16)
+
+
 
     flag = Flag(1155, HEIGHT - block_size*6 - 128 , 64, 64)
     
-    heart = Collectible(230, HEIGHT - block_size - 32 , 16, 16, "heart 16x16")
+    # heart = Collectible(230, HEIGHT - block_size - 64 , 32, 32, "Melon")
     
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
              for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
 
     objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),  
                Block(block_size * 3, HEIGHT - block_size * 3.5, block_size), 
-               fire,fire1,heart,
+               fire,fire_1, spikes,
                Block(block_size * 6,HEIGHT - block_size * 5,block_size),Block(block_size * 7,HEIGHT - block_size * 5,block_size),Block(block_size * 8,HEIGHT - block_size * 5,block_size),Block(block_size * 9,HEIGHT - block_size * 5,block_size)
-               ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)]
+               ,Block(block_size * 12, HEIGHT - block_size * 6, block_size)
+               ,Spikes(700, HEIGHT  - block_size*5 - 32 , 16, 16), Spikes(702, HEIGHT  - block_size*5 - 32 , 16, 16), Spikes(670, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(638, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(608, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(576, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(668, HEIGHT  - block_size*5 - 32 , 16, 16),Spikes(668, HEIGHT  - block_size*5 - 32 , 16, 16)]
     collectible= [flag]
     
     offset_x = 0
@@ -66,12 +71,12 @@ def main(window):
                     controle+=1
                     main(window)
         if controle == 0:
-            iniciar_tela()
+            init_tela()
         else:
             flag.loop()
             player.loop(FPS)
             fire.loop()
-            fire1.loop()
+            fire_1.loop()
             handle_move(player, objects)
             #collectible_handle_move(player, collectible)
             draw(window, background, bg_image, player, objects, offset_x, collectible) #chamando a def do fundo 

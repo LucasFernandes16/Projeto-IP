@@ -2,7 +2,7 @@ import pygame
 import os 
 from os import listdir
 from os.path import isfile, join
-from Traps import Fire
+from Traps import Fire, Spikes
 from Flag import Flag
 from Collectible import Collectible
 
